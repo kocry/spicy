@@ -10,7 +10,6 @@
 #' @importFrom lubridate is.POSIXct is.POSIXlt is.POSIXt is.Date
 #' @importFrom stats na.omit
 #' @importFrom tibble as_tibble
-#' @importFrom utils View
 #' @export
 #'
 #' @examples
