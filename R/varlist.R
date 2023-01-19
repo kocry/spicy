@@ -101,7 +101,7 @@ varlist <- function(x, values = c("min_max", "all"), to_df = FALSE) {
   varlist$na <- apply(x, 2, function(x) sum(is.na(x)))
   varlist <- as.data.frame(lapply(varlist, unlist))
   varlist <- tibble::as_tibble(varlist)
-  ifelse(to_df, return(varlist), return(utils::View(varlist, paste("varlist",
+  ifelse(to_df, return(varlist), return(View(varlist, paste("varlist",
                                                             deparse(substitute(x)),
                                                             sep = " "
   ))))
