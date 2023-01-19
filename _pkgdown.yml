@@ -1,0 +1,10 @@
+url: ~
+
+template:
+  params:
+    bootswatch: flatly
+navbar:
+  components:
+    accueil: ~
+reference:
+

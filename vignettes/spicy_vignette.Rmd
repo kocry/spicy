@@ -1,0 +1,77 @@
+---
+title: "spicy"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{spicy}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+# Overview
+
+coral contains a set of functions for:
+
+- Listing variables of a data frame in three ways  
+- Computing row means from a data.frame or matrix and dealing with NAs  
+
+Functions `varlist()`, `varlist_shiny()` and `varlist_view()` contain descriptions of the attributes of each variable in the data frame. Rows are variables and columns are variable attributes (label, values, class, typeof, number of valid rows and NAs).
+
+varlist(x, values = c("min_max", "all"), to_df = FALSE) creates a data frame of variables in source editor of RStudio.  
+
+varlist_shiny(x, values = c("min_max", "all"), to_df = FALSE) creates an HTML table widget to display data frame of variables.
+
+varlist_view(x, values = c("min_max", "all"), to_df = FALSE) creates a data frame of variables in viewer pane.
+
+Function `mean_n(x, n)` computes row means from a data.frame or matrix. The first argument of `mean_n()` is variables (columns of a data frame or matrix) and the second argument a numeric value indicates the minimum amount of valid values (not NA) per row to calculate row mean (default = 1). Numeric value between 0 and 1 indicates a proportion of valid values per row to calculate the row mean.
+
+Function `sum_n(x, n)` computes row sums from a data.frame or matrix. The first argument of `sum_n()` is variables (columns of a data frame or matrix) and the second argument a numeric value indicates the minimum amount of valid values (not NA) per row to calculate row sum (default = 1). Numeric value between 0 and 1 indicates a proportion of valid values per row to calculate the row sum.
+
+Function `copy_write_excel(x)` copies a data frame or a matrix to the clipboard that can be pasted into Excel. 
+
+
+```{r setup}
+library(spicy)
+```
+
+Functions `varlist()`, `varlist_shiny()` and `varlist_view()` create a data frame of variables (list of variables) with descriptions of the attributes of each variable (label, values, class, typeof, number of valid rows and NAs).  
+
+The argument `values = "min_max"` (default) displays minimum and maximum values of columns; `values = "all"` displays all values of columns.  
+
+For `varlist(x)`, the argument `to_df = FALSE` (default) creates a data frame of variables in the source editor of RStudio; if TRUE, prints a tibble data format in the console.
+
+```{r, eval = FALSE}
+varlist(df)
+
+```
+
+```{r, eval = T}
+df <- data.frame(Name = c("Jon", "Bill", "Maria", "Ben", "Tina"), Age = c(23, 41, 32, 58, 26))
+
+varlist(df, to_df = TRUE)
+varlist(df, values = "all", to_df = TRUE)
+```
+
+  
+Installation
+
+Latest version from GitHub :
+
+```{r, eval = F}
+library(devtools)
+
+install_github("kocry/spicy")
+
+# Alternative
+library(remotes)
+
+install_github("kocry/spicy")
+```
+
