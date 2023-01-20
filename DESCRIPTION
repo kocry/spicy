@@ -13,7 +13,9 @@ URL: https://github.com/kocry/spicy
 BugReports: https://github.com/kocry/spicy/issues
 Imports: 
     dplyr,
+    DT,
     lubridate,
+    shiny,
     tibble
 Suggests: 
     knitr,

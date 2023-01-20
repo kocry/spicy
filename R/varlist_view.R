@@ -1,12 +1,12 @@
-
-#' Data frame of variables (list of variables) contains descriptions of the attributes of each variable (label, values, class, typeof, number of valid rows and NAs)
+#' List variables in the viewer, with buttons to copy, save (CSV/XLS/PDF) and print the table
 #'
 #' @param x a data.frame
 #' @param values if values = "min_max" (default), display minimum and maximum values of columns, if values = "all", display all values of columns
-#' @param to_df if FALSE (default), returns a data frame of variables in source editor of RStudio; if TRUE, print a tibble data format in the console
+#' @param to_df if TRUE, return a tibble data format; if FALSE (default), returns a data frame
 #'
 #' @return a data.frame
-#' @importFrom dplyr first last n_distinct nth
+#' @importFrom dplyr first last nth n_distinct
+#' @importFrom DT datatable
 #' @importFrom lubridate is.POSIXct is.POSIXlt is.POSIXt is.Date
 #' @importFrom stats na.omit
 #' @importFrom tibble as_tibble
@@ -14,10 +14,10 @@
 #'
 #' @examples
 #' \dontrun{
-#' varlist(x)
-#' varlist(x, values = "all", to_df = TRUE)
+#' varlist_view(df) # df is a data frame
+#' varlist_view(df, values = "all")
 #' }
-varlist <- function(x, values = c("min_max", "all"), to_df = FALSE) {
+varlist_view <- function(x, values = c("min_max", "all"), to_df = FALSE) {
   getlab <- function(x) attributes(x)[["label"]]
   label <- sapply(x, getlab)
   names <- colnames(x)
@@ -98,8 +98,24 @@ varlist <- function(x, values = c("min_max", "all"), to_df = FALSE) {
   varlist$na <- apply(x, 2, function(x) sum(is.na(x)))
   varlist <- as.data.frame(lapply(varlist, unlist))
   varlist <- tibble::as_tibble(varlist)
-  ifelse(to_df, return(varlist), return(View(varlist, paste("varlist",
-                                                            deparse(substitute(x)),
-                                                            sep = " "
-  ))))
+  DT::datatable(varlist,
+                editable = F,
+                filter = 'none',
+                caption = 'List of variables',
+                selection = 'none',
+                extensions = list("ColReorder" = NULL,
+                                  "Buttons" = NULL,
+                                  "KeyTable" = NULL,
+                                  "FixedHeader" =NULL,
+                                  "Select" = TRUE),
+                options = list(dom = 'Blfrtip',
+                               autoWidth=TRUE,
+                               pageLength = 10,
+                               buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                               colReorder = TRUE,
+                               keys = TRUE,
+                               searchHighlight = TRUE,
+                               fixedHeader = TRUE
+                )
+  )
 }

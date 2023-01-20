@@ -1,23 +1,25 @@
 
-#' Data frame of variables (list of variables) contains descriptions of the attributes of each variable (label, values, class, typeof, number of valid rows and NAs)
+#' List variables in a table widget in shiny, with buttons to copy, save (as CSV/XLS/PDF) and print the table
 #'
-#' @param x a data.frame
+#' @param x a data frame
 #' @param values if values = "min_max" (default), display minimum and maximum values of columns, if values = "all", display all values of columns
-#' @param to_df if FALSE (default), returns a data frame of variables in source editor of RStudio; if TRUE, print a tibble data format in the console
+#' @param to_df if TRUE, return a tibble data format; if FALSE (default), returns a data frame
 #'
-#' @return a data.frame
-#' @importFrom dplyr first last n_distinct nth
+#' @return a data frame
+#' @importFrom dplyr first last nth n_distinct
+#' @importFrom DT DTOutput renderDT
 #' @importFrom lubridate is.POSIXct is.POSIXlt is.POSIXt is.Date
+#' @importFrom shiny shinyApp fluidPage
 #' @importFrom stats na.omit
 #' @importFrom tibble as_tibble
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' varlist(x)
-#' varlist(x, values = "all", to_df = TRUE)
+#' varlist_shiny(df) # df is a data frame
+#' varlist_shiny(df, values = "all")
 #' }
-varlist <- function(x, values = c("min_max", "all"), to_df = FALSE) {
+varlist_shiny <- function(x, values = c("min_max", "all"), to_df = FALSE) {
   getlab <- function(x) attributes(x)[["label"]]
   label <- sapply(x, getlab)
   names <- colnames(x)
@@ -98,8 +100,39 @@ varlist <- function(x, values = c("min_max", "all"), to_df = FALSE) {
   varlist$na <- apply(x, 2, function(x) sum(is.na(x)))
   varlist <- as.data.frame(lapply(varlist, unlist))
   varlist <- tibble::as_tibble(varlist)
-  ifelse(to_df, return(varlist), return(View(varlist, paste("varlist",
-                                                            deparse(substitute(x)),
-                                                            sep = " "
-  ))))
+  shiny::shinyApp(
+    ui = shiny::fluidPage(DT::DTOutput('tbl')),
+    server = function(input, output) {
+      output$tbl = DT::renderDT(varlist,
+                                server = FALSE,
+                                editable = F,
+                                # caption = "List of variables",
+                                filter = "none",
+                                selection = "none",
+                                extensions = list("ColReorder" = TRUE,
+                                                  "Buttons" = TRUE,
+                                                  "KeyTable" = NULL,
+                                                  "FixedHeader" = TRUE,
+                                                  "Select" = TRUE,
+                                                  "Responsive" = TRUE),
+                                options = list(dom = "Blfrtip",
+                                               fixedHeader = TRUE,
+                                               autoWidth = TRUE,
+                                               pageLength = 10,
+                                               info = FALSE,
+                                               lengthMenu = list(c(10, 20, 50, 100, -1), c("10","20", "50", "100", "All")),
+                                               buttons = list("copy", "print", "csv", "excel", "pdf"),
+                                               colReorder = TRUE,
+                                               keys = TRUE,
+                                               searchHighlight = TRUE,
+                                               columnDefs = list(list(targets = 4, width = '10px'),
+                                                                 list(targets = 5, width = '10px'),
+                                                                 list(targets = 6, width = '5px'),
+                                                                 list(targets = 7, width = '5px'),
+                                                                 list(searchPanes = list(show = FALSE), targets = 1:4)),
+                                               scrollX = TRUE
+                                )
+      )
+    }
+  )
 }
