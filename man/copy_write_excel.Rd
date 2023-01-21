@@ -4,14 +4,14 @@
 \alias{copy_write_excel}
 \title{Copy in the clipboard a data frame from View's RStudio to Excel}
 \usage{
-copy_write_excel(x, row.names = FALSE, col.names = TRUE, ...)
+copy_write_excel(x, row.names = TRUE, col.names = NA, ...)
 }
 \arguments{
-\item{x}{a data frame or matrix}
+\item{x}{a data frame, matrix, array (2d) or table}
 
-\item{row.names}{either a logical value indicating whether the row names of x are to be written along with x, or a character vector of row names to be written.}
+\item{row.names}{either a logical value (default TRUE) indicating whether the row names of x are to be written along with x, or a character vector of row names to be written.}
 
-\item{col.names}{either a logical value indicating whether the column names of x are to be written along with x, or a character vector of column names to be written.}
+\item{col.names}{either a logical value (default NA) indicating whether the column names of x are to be written along with x, or a character vector of column names to be written.}
 
 \item{...}{}
 }
