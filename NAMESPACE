@@ -2,6 +2,7 @@
 
 export(copy_write_excel)
 export(cprop)
+export(cramer_v)
 export(ctab)
 export(fre)
 export(fre_na)

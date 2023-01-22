@@ -40,7 +40,8 @@ rtab <- function (x, y, digits = 1, total = TRUE, percent = FALSE, drop = TRUE, 
   }
   if (n) tab <- cbind(tab, n = effectifs)
   result <- as.table(tab)
-  names(dimnames(result)) <- dn
+  names(dimnames(result))[1] <- RowData
+  names(dimnames(result))[2] <- ColData
   class(result) <- c("proptab", class(result))
   attr(result, "percent") <- percent
   attr(result, "digits") <- digits
