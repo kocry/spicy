@@ -12,11 +12,13 @@ RoxygenNote: 7.2.3
 URL: https://github.com/kocry/spicy
 BugReports: https://github.com/kocry/spicy/issues
 Imports: 
+    bruceR,
     dplyr,
     DT,
     labelled,
     lubridate,
     shiny,
+    stats,
     tibble
 Suggests: 
     knitr,

@@ -9,9 +9,9 @@ ctab(
   y,
   digits = 1,
   total = TRUE,
-  percent = FALSE,
+  n = TRUE,
+  statistics = TRUE,
   drop = TRUE,
-  n = FALSE,
   ...
 )
 }
@@ -24,11 +24,11 @@ ctab(
 
 \item{total}{if \code{TRUE}, add a column with the sum of percentages and a row with global percentages}
 
-\item{percent}{if \code{TRUE}, add a percent sign after the values when printing}
+\item{n}{if \code{TRUE}, display number of observations per row.}
+
+\item{statistics}{if \code{TRUE}, add Chi-2 test, p-value and Cramer's V in table note}
 
 \item{drop}{if \code{TRUE}, lines or columns with a sum of zero, which would generate \code{NaN} percentages, are dropped.}
-
-\item{n}{if \code{TRUE}, display number of observations per row.}
 
 \item{...}{parameters passed to other methods.}
 }
@@ -40,7 +40,7 @@ Two-way frequency table with column percentages
 }
 \examples{
 \dontrun{
-ctab(d$vote, d$sex, n = TRUE)
-ctab(d$vote, d$sex, percent = T, n = TRUE)
+ctab(d$vote, d$sex)
+ctab(d$vote, d$sex, total = FALSE, n = FALSE, statistics = FALSE)
 }
 }

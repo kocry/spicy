@@ -1,3 +1,56 @@
+#' Paste strings
+#'
+#' @param ... parameters passed to other methods.
+#'
+#' @export
+#'
+Glue = function(...) {
+  output = glue(..., .transformer=sprintf_transformer, .envir=parent.frame())
+  output_color = glue_col( gsub("<<", "{", gsub(">>", "}", output)) )
+  return(output_color)
+}
+
+
+#' Print a three-line table (to R Console and Microsoft Word).
+#'
+#' This basic function prints any data frame as a three-line table
+#' to either R Console or Microsoft Word (.doc).
+#' It has been used in many other functions of \code{bruceR} (see below).
+#'
+#' @param x Matrix, data.frame (or data.table), or any model object (e.g., \code{lm, glm, lmer, glmer, ...}).
+#' @param digits,nsmalls Numeric vector specifying the number of decimal places of output. Default is \code{3}.
+#' @param nspaces Number of whitespaces between columns. Default is \code{1}.
+#' @param row.names,col.names Print row/column names. Default is \code{TRUE} (column names are always printed).
+#' To modify the names, you can use a character vector with the same length as the raw names.
+#' @param title Title text, which will be inserted in <p></p> (HTML code).
+#' @param note Note text, which will be inserted in <p></p> (HTML code).
+#' @param append Other contents, which will be appended in the end (HTML code).
+#' @param line Lines looks like true line (\code{TRUE}) or \code{=== --- ===} (\code{FALSE}).
+#' @param file File name of MS Word (\code{.doc}).
+#' @param file.align.head,file.align.text Alignment of table head or table text:
+#' \code{"left"}, \code{"right"}, \code{"center"}.
+#' Either one value of them OR a character vector of mixed values
+#' with the same length as the table columns.
+#' Default alignment (if set as \code{"auto"}):
+#' left, right, right, ..., right.
+#'
+#' @return Invisibly return a list of data frame and HTML code.
+#' @importFrom stats coef line
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' print_table(data.frame(x=1))
+#'
+#' print_table(airquality, file="airquality.doc")
+#' unlink("airquality.doc")  # delete file for code check
+#'
+#' model = lm(Temp ~ Month + Day + Wind + Solar.R, data=airquality)
+#' print_table(model)
+#' print_table(model, file="model.doc")
+#' unlink("model.doc")  # delete file for code check
+#' }
+
 print_table <-  function(x, digits=3, nsmalls=digits,
                        nspaces=1,
                        row.names=TRUE,
@@ -9,7 +62,7 @@ print_table <-  function(x, digits=3, nsmalls=digits,
                        file.align.text="auto") {
   ## Preprocess data.frame ##
   if(!inherits(x, c("matrix", "data.frame", "data.table"))) {
-    coef.table = coef(summary(x))
+    coef.table = stats::coef(summary(x))
     if(!is.null(coef.table)) x = coef.table
   }
   x = as.data.frame(x)
@@ -61,7 +114,7 @@ print_table <-  function(x, digits=3, nsmalls=digits,
   }
 
   ## Compute length to generate line-chars ##
-  linechar = ifelse(line, "\u2500", "-")
+  linechar = ifelse(stats::line, "\u2500", "-")
   title.length = nchar(names(x), type="width")
   vars.length = c()  # bug: vars.length = apply(apply(x, 2, nchar), 2, max)
   for(j in 1:length(x)) vars.length[j] = max(nchar(x[,j], type="width"))
@@ -149,14 +202,14 @@ df_to_html = function(df, title="", note="", append="",
 
   df = as.data.frame(df)
   for(j in 1:ncol(df)) {
-    df[[j]] = "<td align='" %^% align.text[j] %^% "'>" %^%
+    df[[j]] = "<td align=\'" %^% align.text[j] %^% "\'>" %^%
       str_trim(str_replace_all(df[[j]], "^\\s*-{1}", "\u2013")) %^% "</td>"
   }
 
   THEAD = "<tr> " %^%
-    paste("<th align='" %^%
+    paste("<th align=\'" %^%
             align.head %^%
-            "'>" %^% names(df) %^% "</th>",
+            "\'>" %^% names(df) %^% "</th>",
           collapse=" ") %^% " </tr>"
 
   TBODY = "<tr> " %^%
@@ -211,7 +264,7 @@ table th, table td {padding-left: 5px; padding-right: 5px; height: 19px;}
       f = file(file, "w", encoding="UTF-8")
       cat(HTML, file=f)
       close(f)
-      Print("<<green \u221a>> Table saved to <<bold \"{paste0(getwd(), '/', file)}\">>")
+      Print("<<green \u221a>> Table saved to <<bold \"{paste0(getwd(), \'/\', file)}\">>")
       cat("\n")
     }
   }
