@@ -13,7 +13,7 @@ copy_write_excel(x, row.names = TRUE, col.names = NA, ...)
 
 \item{col.names}{either a logical value (default NA) indicating whether the column names of x are to be written along with x, or a character vector of column names to be written.}
 
-\item{...}{}
+\item{...}{parameters passed to other methods.}
 }
 \value{
 a data frame in the clipboard

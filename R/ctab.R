@@ -47,5 +47,5 @@ ctab <- function (x, y, digits = 1, total = TRUE, percent = FALSE, drop = TRUE, 
   attr(result, "digits") <- digits
   attr(result, "total") <- total
   attr(result, "row.n") <- n
-  result
-}
+  return(result)
+  }

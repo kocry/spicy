@@ -21,7 +21,7 @@
 #' rprop(tab, digits=2, percent=TRUE, total=FALSE)
 #' }
 
-rtab <- function(tab, digits = 1, total = TRUE, percent = FALSE, drop = TRUE, n=FALSE, ...) {
+rprop <- function(tab, digits = 1, total = TRUE, percent = FALSE, drop = TRUE, n=FALSE, ...) {
   # subset to non-empty rows/columns
   if(drop) tab <- tab[rowSums(tab) > 0, colSums(tab) > 0, drop=FALSE]
   dn <- names(dimnames(tab))
@@ -45,6 +45,6 @@ rtab <- function(tab, digits = 1, total = TRUE, percent = FALSE, drop = TRUE, n=
   attr(result, "digits") <- digits
   attr(result, "total") <- total
   attr(result, "col.n") <- n
-  result
-}
+  return(result)
+  }
 

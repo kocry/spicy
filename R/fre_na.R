@@ -5,6 +5,7 @@
 #' @param data either a vector or a data frame object
 #' @param ... parameters passed to other methods
 #' @return The result is an object of class data.frame.
+#' @importFrom labelled look_for
 #'
 #' @export
 #'
@@ -23,7 +24,7 @@
 fre_na <- function(data, ...) {
   d = NULL
   if (inherits(data, "data.frame")) {
-    s <- lookfor(data, ...)$variable
+    s <- labelled::lookfor(data, ...)$variable
     d = data[, c(s)]
   }
   else {
