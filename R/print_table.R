@@ -1,16 +1,3 @@
-#' Paste strings
-#'
-#' @param ... parameters passed to other methods.
-#'
-#' @export
-#'
-Glue = function(...) {
-  output = glue(..., .transformer=sprintf_transformer, .envir=parent.frame())
-  output_color = glue_col( gsub("<<", "{", gsub(">>", "}", output)) )
-  return(output_color)
-}
-
-
 #' Print a three-line table (to R Console and Microsoft Word).
 #'
 #' This basic function prints any data frame as a three-line table
@@ -36,6 +23,7 @@ Glue = function(...) {
 #'
 #' @return Invisibly return a list of data frame and HTML code.
 #' @importFrom stats coef line
+#' @importFrom stringr str_replace str_replace_all str_detect str_trim
 #' @export
 #'
 #' @examples
@@ -51,7 +39,7 @@ Glue = function(...) {
 #' unlink("model.doc")  # delete file for code check
 #' }
 
-print_table <-  function(x, digits=3, nsmalls=digits,
+print_table = function(x, digits=3, nsmalls=digits,
                        nspaces=1,
                        row.names=TRUE,
                        col.names=TRUE,
@@ -62,7 +50,7 @@ print_table <-  function(x, digits=3, nsmalls=digits,
                        file.align.text="auto") {
   ## Preprocess data.frame ##
   if(!inherits(x, c("matrix", "data.frame", "data.table"))) {
-    coef.table = stats::coef(summary(x))
+    coef.table = coef(summary(x))
     if(!is.null(coef.table)) x = coef.table
   }
   x = as.data.frame(x)
@@ -114,7 +102,7 @@ print_table <-  function(x, digits=3, nsmalls=digits,
   }
 
   ## Compute length to generate line-chars ##
-  linechar = ifelse(stats::line, "\u2500", "-")
+  linechar = ifelse(line, "\u2500", "-")
   title.length = nchar(names(x), type="width")
   vars.length = c()  # bug: vars.length = apply(apply(x, 2, nchar), 2, max)
   for(j in 1:length(x)) vars.length[j] = max(nchar(x[,j], type="width"))
@@ -202,24 +190,24 @@ df_to_html = function(df, title="", note="", append="",
 
   df = as.data.frame(df)
   for(j in 1:ncol(df)) {
-    df[[j]] = "<td align=\'" %^% align.text[j] %^% "\'>" %^%
+    df[[j]] = "<td align='" %^% align.text[j] %^% "'>" %^%
       str_trim(str_replace_all(df[[j]], "^\\s*-{1}", "\u2013")) %^% "</td>"
   }
 
   THEAD = "<tr> " %^%
-    paste("<th align=\'" %^%
+    paste("<th align='" %^%
             align.head %^%
-            "\'>" %^% names(df) %^% "</th>",
+            "'>" %^% names(df) %^% "</th>",
           collapse=" ") %^% " </tr>"
 
   TBODY = "<tr> " %^%
     paste(apply(df, 1, function(...) paste(..., collapse=" ")),
           collapse=" </tr>\n<tr> ") %^% " </tr>"
-  TBODY = TBODY %>%
-    str_replace_all(">\\s*NA\\s*<", "><") %>%
-    str_replace_all("\\s+</td>", "</td>") %>%
-    str_replace_all("\\[\\s+", "[") %>%
-    str_replace_all("\\,\\s+", ", ") %>%
+  TBODY = TBODY |>
+    str_replace_all(">\\s*NA\\s*<", "><") |>
+    str_replace_all("\\s+</td>", "</td>") |>
+    str_replace_all("\\[\\s+", "[") |>
+    str_replace_all("\\,\\s+", ", ") |>
     str_replace_all("<\\.001", "< .001")
 
   TABLE = paste0("
@@ -264,10 +252,248 @@ table th, table td {padding-left: 5px; padding-right: 5px; height: 19px;}
       f = file(file, "w", encoding="UTF-8")
       cat(HTML, file=f)
       close(f)
-      Print("<<green \u221a>> Table saved to <<bold \"{paste0(getwd(), \'/\', file)}\">>")
+      Print("<<green \u221a>> Table saved to <<bold \"{paste0(getwd(), '/', file)}\">>")
       cat("\n")
     }
   }
 
   invisible(list(HTML=HTML, TABLE=TABLE))
+}
+
+
+#### Pipeline Functions ####
+
+
+#' Paste strings together.
+#'
+#' Paste strings together. A wrapper of \code{paste0()}.
+#' Why \code{\%^\%}? Because typing \code{\%} and \code{^} is pretty easy by
+#' pressing \strong{Shift + 5 + 6 + 5}.
+#'
+#' @param x,y Any objects, usually a numeric or character string or vector.
+#'
+#' @return A character string/vector of the pasted values.
+#'
+#' @examples
+#' \dontrun{
+#' "He" %^% "llo"
+#' "X" %^% 1:10
+#' "Q" %^% 1:5 %^% letters[1:5]
+#' }
+#' @export
+`%^%` = function(x, y) {
+  paste0(x, y)
+}
+
+
+#' The opposite of \code{\%in\%}.
+#'
+#' @param x Numeric or character vector.
+#' @param vector Numeric or character vector.
+#'
+#' @return A vector of \code{TRUE} or \code{FALSE}.
+#'
+#' @examples
+#' \dontrun{
+#' data = data.table(ID=1:10, X=sample(1:10, 10))
+#' data
+#' data[ID %notin% c(1, 3, 5, 7, 9)]
+#' }
+#' @export
+`%notin%` = function(x, vector) {
+  match(x, vector, nomatch=0) == 0
+}
+
+
+#' A simple extension of \code{\%in\%}.
+#'
+#' @inheritParams %notin%
+#'
+#' @return \code{TRUE} or \code{FALSE}.
+#'
+#' @examples
+#' \dontrun{
+#' 1:2 %allin% 1:3  # TRUE
+#' 3:4 %allin% 1:3  # FALSE
+#' }
+#' @export
+`%allin%` = function(x, vector) {
+  all(x %in% vector)
+}
+
+
+#' A simple extension of \code{\%in\%}.
+#'
+#' @inheritParams %notin%
+#'
+#' @return \code{TRUE} or \code{FALSE}.
+#'
+#' @examples
+#' \dontrun{
+#' 3:4 %anyin% 1:3  # TRUE
+#' 4:5 %anyin% 1:3  # FALSE
+#' }
+#' @export
+`%anyin%` = function(x, vector) {
+  any(x %in% vector)
+}
+
+
+#' A simple extension of \code{\%in\%}.
+#'
+#' @inheritParams %notin%
+#'
+#' @return \code{TRUE} or \code{FALSE}.
+#'
+#' @examples
+#' \dontrun{
+#' 3:4 %nonein% 1:3  # FALSE
+#' 4:5 %nonein% 1:3  # TRUE
+#' }
+#'
+#' @export
+`%nonein%` = function(x, vector) {
+  !any(x %in% vector)
+}
+
+
+#' A simple extension of \code{\%in\%}.
+#'
+#' @param pattern Character string containing \strong{regular expressions} to be matched.
+#' @param vector Character vector.
+#'
+#' @return \code{TRUE} or \code{FALSE}.
+#'
+#' @examples
+#' \dontrun{
+#' "Bei" %partin% c("Beijing", "Shanghai")  # TRUE
+#' "bei" %partin% c("Beijing", "Shanghai")  # FALSE
+#' "[aeiou]ng" %partin% c("Beijing", "Shanghai")  # TRUE
+#' }
+#'
+#' @export
+`%partin%` = function(pattern, vector) {
+  any(grepl(pattern, vector, perl=TRUE))
+}
+
+
+
+#' Format "1234" to "1,234".
+#'
+#' @param x A number or numeric vector.
+#' @param mark Usually \code{","}.
+#'
+#' @return Formatted character string.
+#'
+#' @examples
+#' \dontrun{
+#' formatN(1234)
+#' }
+#' @seealso \code{\link[base:format]{format}}, \code{\link{formatF}}
+#'
+#' @export
+formatN = function(x, mark=",") {
+  format(x, big.mark=mark)
+}
+
+
+#' Format numeric values.
+#'
+#' @param x A number or numeric vector.
+#' @param digits,nsmall Number of decimal places of output. Default is \code{3}.
+#'
+#' @return Formatted character string.
+#'
+#' @examples
+#' \dontrun{
+#' formatF(pi, 20)
+#' }
+#' @export
+formatF = function(x, digits=3, nsmall=digits) {
+  # format(x, digits=0, nsmall=nsmall, scientific=FALSE)
+  if(inherits(x, "character")) {
+    xf = sprintf(paste0("%-", max(nchar(x), na.rm=TRUE), "s"), x)  # left adjustment
+  } else {
+    x = sprintf(paste0("%.", nsmall, "f"), x)
+    xf = sprintf(paste0("%", max(nchar(x), na.rm=TRUE), "s"), x)
+  }
+  return(xf)
+}
+
+
+#' A simple extension of \code{rgb()}.
+#'
+#' @param r,g,b Red, Green, Blue: 0~255.
+#' @param alpha Color transparency (opacity): 0~1.
+#' If not specified, an opaque color will be generated.
+#'
+#' @return \code{"#rrggbb"} or \code{"#rrggbbaa"}.
+#'
+#' @examples
+#' \dontrun{
+#' RGB(255, 0, 0)  # red: "#FF0000"
+#' RGB(255, 0, 0, 0.8)  # red with 80\% opacity: "#FF0000CC"
+#' }
+#' @export
+RGB = function(r, g, b, alpha) {
+  grDevices::rgb(r/255, g/255, b/255, alpha)
+}
+
+#' Transform \emph{p} value.
+#'
+#' @param p \emph{p} value.
+#' @param nsmall.p Number of decimal places of \emph{p} value. Default is \code{3}.
+#'
+#' @return A character string of transformed \emph{p} value.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' p.trans(c(1, 0.1, 0.05, 0.01, 0.001, 0.0001, 0.0000001, 1e-50)) |> data.table(p=.)
+#' }
+p.trans = function(p, nsmall.p=3) {
+  mapply(function(p, nsmall.p) {
+    ifelse(is.na(p) | p > 1 | p < 0, "",
+           ifelse(p < 10^-nsmall.p, gsub("0(?=\\.)", "", Glue("<{10^-nsmall.p:.{nsmall.p}}"), perl=T),
+                  gsub("0(?=\\.)", " ", Glue("{p:.{nsmall.p}}"), perl=T)))
+  }, p, nsmall.p)
+}
+
+
+
+#' Transform \emph{p} value to significance code.
+#'
+#' @inheritParams p.trans
+#'
+#' @return A character string of significance code.
+#'
+#' @examples
+#' \dontrun{
+#' sig.trans(c(1, 0.09, 0.049, 0.009, 0.001, 0.0001, 1e-50)) |> data.table(sig=.)
+#' }
+#' @export
+sig.trans = function(p) {
+  ifelse(is.na(p) | p > 1 | p < 0, "",
+         ifelse(p < .001, "***",
+                ifelse(p < .01, "** ",
+                       ifelse(p < .05, "*  ",
+                              ifelse(p < .10, ".  ", "   ")))))
+}
+
+
+
+#' Repeat a character string for many times and paste them up.
+#'
+#' @param char Character string.
+#' @param rep.times Times for repeat.
+#'
+#' @return Character string.
+#'
+#' @examples
+#' \dontrun{
+#' rep_char("a", 5)
+#' }
+#' @export
+rep_char = function(char, rep.times) {
+  paste(rep(char, times=rep.times), collapse="")
 }

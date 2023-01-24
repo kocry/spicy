@@ -12,7 +12,6 @@
 #' @param ... parameters passed to other methods.
 #'
 #' @return The result is an object of class \code{table} and \code{proptab}.
-#' @importFrom bruceR print_table Glue
 #' @importFrom stats chisq.test
 #' @export
 #'
@@ -43,10 +42,11 @@ rtab <- function (x, y, digits = 1, total = TRUE, n = TRUE, statistics = TRUE, d
   class(result) <- c("proptab", class(result))
   chi_table <- stats::chisq.test(table(x, y))
   chi2 <- as.numeric(chi_table[1])
+  df <- as.numeric(chi_table[2])
   p_value <- as.numeric(chi_table[3])
   cramer <- cramer_v(table(x, y))
-  note <- bruceR::Glue("Chi-2 = {sprintf('%.1f', chi2)}, p-value = {sprintf('%.3f', p_value)}, Cramer's V = {sprintf('%.2f', cramer)}")
+  note <- Glue("Chi-2 = {sprintf('%.1f', chi2)}, df = {sprintf('%.0f', df)}, p-value = {sprintf('%.3f', p_value)}, Cramer's V = {sprintf('%.2f', cramer)}")
   ifelse(statistics,
-         return(bruceR::print_table(result, digits = 1, note = note)),
-         return(bruceR::print_table(result, digits = 1)))
+         return(print_table(result, digits = 1, note = note)),
+         return(print_table(result, digits = 1)))
 }

@@ -8,7 +8,8 @@ fre(
   x,
   digits = 1,
   cum = FALSE,
-  total = FALSE,
+  format = FALSE,
+  total = TRUE,
   exclude = NULL,
   sort = "",
   valid = !(NA \%in\% exclude),
@@ -22,6 +23,8 @@ fre(
 \item{digits}{number of digits to keep for the percentages}
 
 \item{cum}{if TRUE, display cumulative percentages}
+
+\item{format}{if TRUE, print a three-line table, display variable label and data type (the class)}
 
 \item{total}{if TRUE, add a final row with totals}
 

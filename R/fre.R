@@ -5,6 +5,7 @@
 #' @param x either a vector to be tabulated, or a table object
 #' @param digits number of digits to keep for the percentages
 #' @param cum if TRUE, display cumulative percentages
+#' @param format if TRUE, print a three-line table, display variable label and data type (the class)
 #' @param total if TRUE, add a final row with totals
 #' @param exclude vector of values to exclude from the tabulation (if \code{x} is a vector)
 #' @param sort if specified, allow to sort the table by increasing ("inc") or decreasing ("dec") frequencies
@@ -31,7 +32,7 @@
 #' fre(d$region, levels = "v")
 #' }
 
-fre <- function(x, digits = 1, cum = FALSE, total = FALSE, exclude = NULL, sort = "",
+fre <- function(x, digits = 1, cum = FALSE, format = FALSE, total = TRUE, exclude = NULL, sort = "",
                  valid = !(NA %in% exclude), levels = c("prefixed", "labels", "values"),
                  na.last = TRUE) {
 
@@ -98,5 +99,14 @@ fre <- function(x, digits = 1, cum = FALSE, total = FALSE, exclude = NULL, sort 
 
   class(result) <- c("freqtab", class(result))
 
-  round(result, digits = digits)
-}
+  labelx <- attr(x,"label")
+  classx <- class(x)
+  note1 <- Glue("Label: {labelx}","\n", "Type: {classx}")
+  note2 <- Glue("Type: {classx}")
+
+  ifelse(format & !is.null(attr(x,"label")),
+         return(print_table(result, digits = digits, note=note1)),
+         ifelse(format & is.null(attr(x,"label")),
+                                 return(print_table(result, digits = digits, note=note2)),
+                                 return(round(result, digits = digits))))
+  }

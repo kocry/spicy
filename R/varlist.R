@@ -9,7 +9,7 @@
 #' @importFrom dplyr first last n_distinct nth
 #' @importFrom lubridate is.POSIXct is.POSIXlt is.POSIXt is.Date
 #' @importFrom stats na.omit
-#' @importFrom tibble as_tibble
+#' @importFrom tibble as_tibble view
 #' @export
 #'
 #' @examples
@@ -98,8 +98,9 @@ varlist <- function(x, values = c("min_max", "all"), to_df = FALSE) {
   varlist$na <- apply(x, 2, function(x) sum(is.na(x)))
   varlist <- as.data.frame(lapply(varlist, unlist))
   varlist <- tibble::as_tibble(varlist)
-  ifelse(to_df, return(varlist), return(View(varlist, paste("varlist",
-                                                            deparse(substitute(x)),
-                                                            sep = " "
-  ))))
-}
+  ifelse(to_df,
+         return(varlist),
+         return(tibble::view(varlist, paste("varlist",
+                                            deparse(substitute(x)),
+                                            sep = " "))))
+  }
