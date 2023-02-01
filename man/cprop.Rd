@@ -38,9 +38,11 @@ Column percentages of a two-way frequency table
 \examples{
 \dontrun{
 ## Sample table
-tab <- (d$vote, d$sex)
+data(mtcars4)
+tab <- table(mtcars$cyl, mtcars$vs)
 ## Column percentages
 cprop(tab)
+mtcars |> dplyr::select(cyl,vs) |> table() |> cprop()
 ## Column percentages with custom display
 cprop(tab, digits=2, percent=TRUE, total=FALSE)
 }

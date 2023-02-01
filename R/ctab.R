@@ -1,6 +1,7 @@
 
 #' Two-way frequency table with column percentages
 #'
+#' @param d data.frame
 #' @param x row variable
 #' @param y column variable
 #' @param digits number of digits to display
@@ -16,12 +17,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' ctab(d$vote, d$sex)
-#' ctab(d$vote, d$sex, total = FALSE, n = FALSE, statistics = FALSE)
+#' data(mtcars)
+#' ctab(mtcars, cyl, vs)
+#' mtcars |> ctab(cyl, vs)
+#' ctab(mtcars, cyl, vs, total = FALSE, n = FALSE, statistics = FALSE)
 #' }
 
-ctab <- function (x, y, digits = 1, total = TRUE, n = TRUE, statistics = TRUE, drop = TRUE, ...) {
-  tab <- table(x, y)
+ctab <- function (d, x, y, digits = 1, total = TRUE, n = TRUE, statistics = TRUE, drop = TRUE, ...) {
+  tab <- eval(substitute(table(d$x, d$y)))
   # subset to non-empty rows/columns
   if(drop) tab <- tab[rowSums(tab) > 0, colSums(tab) > 0, drop=FALSE]
   dn <- names(dimnames(tab))
@@ -40,11 +43,11 @@ ctab <- function (x, y, digits = 1, total = TRUE, n = TRUE, statistics = TRUE, d
   if (n) tab <- rbind(tab, N = effectifs)
   result <- as.data.frame.array(tab)
   class(result) <- c("proptab", class(result))
-  chi_table <- stats::chisq.test(table(x, y))
+  chi_table <- stats::chisq.test(eval(substitute(table(d$x, d$y))))
   chi2 <- as.numeric(chi_table[1])
   df <- as.numeric(chi_table[2])
   p_value <- as.numeric(chi_table[3])
-  cramer <- cramer_v(table(x, y))
+  cramer <- cramer_v(eval(substitute(table(d$x, d$y))))
   note <- Glue("Chi-2 = {sprintf('%.1f', chi2)}, df = {sprintf('%.0f', df)}, p-value = {sprintf('%.3f', p_value)}, Cramer's V = {sprintf('%.2f', cramer)}")
   ifelse(statistics,
          return(print_table(result, digits = 1, note = note)),

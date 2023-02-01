@@ -1,5 +1,5 @@
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("Welcome to spicy!")
+  Print("<<yellow Welcome to spicy!>>")
 }
 
 

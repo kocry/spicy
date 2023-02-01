@@ -2,11 +2,12 @@
 #'
 #' Generate and format frequency tables from a variable or a table, with percentages and formatting options.
 #'
-#' @param x either a vector to be tabulated, or a table object
+#' @param d a data.frame
+#' @param x variable to be tabulated
 #' @param digits number of digits to keep for the percentages
-#' @param cum if TRUE, display cumulative percentages
-#' @param format if TRUE, print a three-line table, display variable label and data type (the class)
-#' @param total if TRUE, add a final row with totals
+#' @param cum if TRUE (default: FALSE), display cumulative percentages
+#' @param format if TRUE (default: FALSE), print a three-line table, display variable label and data type (the class)
+#' @param total if FALSE (default: TRUE), remove a final row with totals
 #' @param exclude vector of values to exclude from the tabulation (if \code{x} is a vector)
 #' @param sort if specified, allow to sort the table by increasing ("inc") or decreasing ("dec") frequencies
 #' @param valid if TRUE, display valid percentages
@@ -22,9 +23,11 @@
 #' @examples
 #' \dontrun{
 #' # factor
-#' fre(d$educ)
-#' fre(d$educ, cum = TRUE, total = TRUE)
-#' fre(d$educ, cum = TRUE, total = TRUE, sort = "dec")
+#' data(mtcars)
+#' fre(mtcars, vs)
+#' mtcars |> fre(vs)
+#' fre(mtcars, vs, cum = TRUE, total = TRUE)
+#' fre(mtcars, vs, cum = TRUE, total = TRUE, sort = "inc")
 #'
 #' # labelled data
 #' fre(d$region)
@@ -32,24 +35,25 @@
 #' fre(d$region, levels = "v")
 #' }
 
-fre <- function(x, digits = 1, cum = FALSE, format = FALSE, total = TRUE, exclude = NULL, sort = "",
-                 valid = !(NA %in% exclude), levels = c("prefixed", "labels", "values"),
-                 na.last = TRUE) {
+fre <- function(d, x, digits = 1, cum = FALSE, format = FALSE, total = TRUE, exclude = NULL, sort = "",
+                valid = !(NA %in% exclude), levels = c("prefixed", "labels", "values"),
+                na.last = TRUE) {
 
   levels <- match.arg(levels)
 
-  if (is.table(x)) {
-    tab <- x
-  } else {
-    tab <- table(labelled::to_factor(x, levels), exclude = exclude)
-  }
+  # if (is.table(d) & is.null(x)) {
+  #  tab <- d
+  #} else {
+  #  tab <- eval(substitute(table(labelled::to_factor(d$x, levels), exclude = exclude)))
+  #}
+  tab <- eval(substitute(table(labelled::to_factor(d$x, levels), exclude = exclude)))
 
   effectifs <- as.vector(tab)
   pourc <- as.vector(effectifs / sum(effectifs) * 100)
   result <- data.frame(n = effectifs, pourc = pourc)
 
   if (valid) {
-    user_na <- unique(as.character(labelled::to_factor(x, levels)[is.na(x)]))
+    user_na <- eval(substitute(unique(as.character(labelled::to_factor(d$x, levels)[is.na(d$x)]))))
     NA.position <- which(is.na(names(tab)) | names(tab) %in% user_na)
     n.na <- sum(tab[NA.position])
     valid.pourc <- as.vector(effectifs / (sum(effectifs) - n.na) * 100)
@@ -99,14 +103,14 @@ fre <- function(x, digits = 1, cum = FALSE, format = FALSE, total = TRUE, exclud
 
   class(result) <- c("freqtab", class(result))
 
-  labelx <- attr(x,"label")
-  classx <- class(x)
+  labelx <- eval(substitute(attr(d$x,"label")))
+  classx <- eval(substitute(class(d$x)))
   note1 <- Glue("Label: {labelx}","\n", "Type: {classx}")
   note2 <- Glue("Type: {classx}")
 
-  ifelse(format & !is.null(attr(x,"label")),
+  ifelse(format & !is.null(eval(substitute(attr(d$x,"label")))),
          return(print_table(result, digits = digits, note=note1)),
-         ifelse(format & is.null(attr(x,"label")),
-                                 return(print_table(result, digits = digits, note=note2)),
-                                 return(round(result, digits = digits))))
-  }
+         ifelse(format & is.null(eval(substitute(attr(d$x,"label")))),
+                return(print_table(result, digits = digits, note=note2)),
+                return(round(result, digits = digits))))
+}

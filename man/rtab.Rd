@@ -5,6 +5,7 @@
 \title{Cross table with row percentages}
 \usage{
 rtab(
+  d,
   x,
   y,
   digits = 1,
@@ -16,6 +17,8 @@ rtab(
 )
 }
 \arguments{
+\item{d}{data.frame}
+
 \item{x}{row variable}
 
 \item{y}{column variable}
@@ -40,7 +43,9 @@ Two-way frequency table with row percentages
 }
 \examples{
 \dontrun{
-rtab(d$vote, d$sex)
-rtab(d$vote, d$sex, total = FALSE, n = FALSE, statistics = FALSE)
+data(mtcars)
+rtab(mtcars, cyl, vs)
+mtcars |> rtab(cyl, vs)
+rtab(mtcars, cyl, vs, total = FALSE, n = FALSE, statistics = FALSE)
 }
 }

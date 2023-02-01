@@ -14,9 +14,11 @@
 #' @examples
 #' \dontrun{
 #' ## Sample table
-#' tab <- (d$vote, d$sex)
-#' ## Row percentages
+#' data(mtcars4)
+#' tab <- table(mtcars$cyl, mtcars$vs)
+#' ## Column percentages
 #' rprop(tab)
+#' mtcars |> dplyr::select(cyl,vs) |> table() |> rprop()
 #' ## Row percentages with custom display
 #' rprop(tab, digits=2, percent=TRUE, total=FALSE)
 #' }
@@ -28,14 +30,14 @@ rprop <- function(tab, digits = 1, total = TRUE, percent = FALSE, drop = TRUE, n
   if (total) {
     .tmp.rownames <- rownames(tab)
     tab <- rbind(tab, apply(tab, 2, sum))
-    rownames(tab) <- c(.tmp.rownames, gettext("All", domain="R-questionr"))
+    rownames(tab) <- c(.tmp.rownames, gettext("All", domain="R-spicy"))
   }
   if (n) effectifs <- apply(tab, 1, sum)
   tab <- base::prop.table(tab, 1) * 100
   if (total) {
     .tmp.colnames <- colnames(tab)
     tab <- cbind(tab, Total = apply(tab, 1, sum))
-    colnames(tab) <- c(.tmp.colnames, gettext("Total", domain="R-questionr"))
+    colnames(tab) <- c(.tmp.colnames, gettext("Total", domain="R-spicy"))
   }
   if (n) tab <- cbind(tab, n = effectifs)
   result <- as.table(tab)

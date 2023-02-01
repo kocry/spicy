@@ -5,6 +5,7 @@
 \title{Two-way frequency table with column percentages}
 \usage{
 ctab(
+  d,
   x,
   y,
   digits = 1,
@@ -16,6 +17,8 @@ ctab(
 )
 }
 \arguments{
+\item{d}{data.frame}
+
 \item{x}{row variable}
 
 \item{y}{column variable}
@@ -40,7 +43,9 @@ Two-way frequency table with column percentages
 }
 \examples{
 \dontrun{
-ctab(d$vote, d$sex)
-ctab(d$vote, d$sex, total = FALSE, n = FALSE, statistics = FALSE)
+data(mtcars)
+ctab(mtcars, cyl, vs)
+mtcars |> ctab(cyl, vs)
+ctab(mtcars, cyl, vs, total = FALSE, n = FALSE, statistics = FALSE)
 }
 }

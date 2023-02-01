@@ -5,6 +5,7 @@
 \title{Generate frequency tables.}
 \usage{
 fre(
+  d,
   x,
   digits = 1,
   cum = FALSE,
@@ -18,15 +19,17 @@ fre(
 )
 }
 \arguments{
-\item{x}{either a vector to be tabulated, or a table object}
+\item{d}{a data.frame}
+
+\item{x}{variable to be tabulated}
 
 \item{digits}{number of digits to keep for the percentages}
 
-\item{cum}{if TRUE, display cumulative percentages}
+\item{cum}{if TRUE (default: FALSE), display cumulative percentages}
 
-\item{format}{if TRUE, print a three-line table, display variable label and data type (the class)}
+\item{format}{if TRUE (default: FALSE), print a three-line table, display variable label and data type (the class)}
 
-\item{total}{if TRUE, add a final row with totals}
+\item{total}{if FALSE (default: TRUE), remove a final row with totals}
 
 \item{exclude}{vector of values to exclude from the tabulation (if \code{x} is a vector)}
 
@@ -49,9 +52,11 @@ Generate and format frequency tables from a variable or a table, with percentage
 \examples{
 \dontrun{
 # factor
-fre(d$educ)
-fre(d$educ, cum = TRUE, total = TRUE)
-fre(d$educ, cum = TRUE, total = TRUE, sort = "dec")
+data(mtcars)
+fre(mtcars, vs)
+mtcars |> fre(vs)
+fre(mtcars, vs, cum = TRUE, total = TRUE)
+fre(mtcars, vs, cum = TRUE, total = TRUE, sort = "inc")
 
 # labelled data
 fre(d$region)

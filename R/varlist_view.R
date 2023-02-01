@@ -20,8 +20,8 @@
 varlist_view <- function(x, values = c("min_max", "all"), to_df = FALSE) {
   getlab <- function(x) attributes(x)[["label"]]
   label <- sapply(x, getlab)
-  names <- colnames(x)
-  varlist <- as.data.frame(cbind(names, label))
+  variables <- colnames(x)
+  varlist <- as.data.frame(cbind(variables, label))
   varlist$label[varlist$label == "NULL"] <- NA
   options(scipen = 999)
   min_max <- lapply(x, function(x) {
