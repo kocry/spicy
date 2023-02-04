@@ -2,13 +2,14 @@
 % Please edit documentation in R/ctab.R
 \name{ctab}
 \alias{ctab}
-\title{Two-way frequency table with column percentages}
+\title{Cross table}
 \usage{
 ctab(
   d,
   x,
   y,
   digits = 1,
+  rowprct = FALSE,
   total = TRUE,
   n = TRUE,
   statistics = TRUE,
@@ -25,27 +26,30 @@ ctab(
 
 \item{digits}{number of digits to display}
 
-\item{total}{if \code{TRUE}, add a column with the sum of percentages and a row with global percentages}
+\item{rowprct}{if \code{TRUE}, compute row percentages. Default \code{FALSE} computes column percentages.}
 
-\item{n}{if \code{TRUE}, display number of observations per row.}
+\item{total}{if \code{TRUE} (default), add a column with the sum of percentages and a row with global percentages.}
 
-\item{statistics}{if \code{TRUE}, add Chi-2 test, p-value and Cramer's V in table note}
+\item{n}{if \code{TRUE} (default), display number of observations per row.}
+
+\item{statistics}{if \code{TRUE} (default), add Chi-2 test, p-value and Cramer's V in table note, a title and print a three-line table. If \code{FALSE}, return a tibble object,}
 
 \item{drop}{if \code{TRUE}, lines or columns with a sum of zero, which would generate \code{NaN} percentages, are dropped.}
 
 \item{...}{parameters passed to other methods.}
 }
 \value{
-The result is an object of class \code{table} and \code{proptab}.
+The result is an object of class \code{table} and \code{proptab}.or a tibble if statistics argument is FALSE
 }
 \description{
-Two-way frequency table with column percentages
+Two-way frequency table with column (default) or row percentages
 }
 \examples{
 \dontrun{
 data(mtcars)
-ctab(mtcars, cyl, vs)
-mtcars |> ctab(cyl, vs)
-ctab(mtcars, cyl, vs, total = FALSE, n = FALSE, statistics = FALSE)
+tab(mtcars, cyl, vs)
+mtcars |> tab(cyl, vs)
+tab(mtcars, cyl, vs, rowprct = TRUE, total = FALSE, n = FALSE, statistics = FALSE)
+tab(mtcars, cyl, vs, total = FALSE, n = FALSE, statistics = FALSE)
 }
 }

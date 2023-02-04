@@ -90,8 +90,8 @@ varlist <- function(x, values = c("min_max", "all"), to_df = FALSE) {
   type <- sapply(x, typeof)
   varlist$values <- switch(values,
                            min_max = min_max,
-                           all = all
-  )
+                           all = all)
+
   varlist$class <- class
   varlist$type <- type
   varlist$valid <- apply(x, 2, function(x) length(x) - sum(is.na(x)))
