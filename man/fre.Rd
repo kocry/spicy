@@ -9,7 +9,7 @@ fre(
   x,
   digits = 1,
   cum = FALSE,
-  format = FALSE,
+  format = TRUE,
   total = TRUE,
   exclude = NULL,
   sort = "",
@@ -27,7 +27,7 @@ fre(
 
 \item{cum}{if TRUE (default: FALSE), display cumulative percentages}
 
-\item{format}{if TRUE (default: FALSE), print a three-line table, display variable label and data type (the class)}
+\item{format}{if TRUE (default), print a three-line table, display variable label and data type (the class). If FALSE, return a data.frame object.}
 
 \item{total}{if FALSE (default: TRUE), remove a final row with totals}
 

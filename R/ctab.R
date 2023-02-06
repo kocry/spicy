@@ -87,8 +87,14 @@ ctab <- function (d, x, y, digits = 1, rowprct = FALSE, total = TRUE, n = TRUE, 
   title <- Glue("Cross-table: {first(g)} {Print('<<silver x>>')} {last(g)} (%)")
 
   ifelse(statistics,
-         return(print_table(result, row.names = T, digits = digits, title = title, note = note, )),
-         return(as_tibble(as.data.frame.array(result), rownames = "modalities")))
+         return(print_table(result,
+                            row.names = T,
+                            digits = digits,
+                            title = title,
+                            note = note,
+                            nspaces = 2)),
+         return(as_tibble(as.data.frame.array(result),
+                          rownames = "modalities")))
         # return(print_table(result, digits = digits))
 }
 

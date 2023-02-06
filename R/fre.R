@@ -6,7 +6,7 @@
 #' @param x variable to be tabulated
 #' @param digits number of digits to keep for the percentages
 #' @param cum if TRUE (default: FALSE), display cumulative percentages
-#' @param format if TRUE (default: FALSE), print a three-line table, display variable label and data type (the class)
+#' @param format if TRUE (default), print a three-line table, display variable label and data type (the class). If FALSE, return a data.frame object.
 #' @param total if FALSE (default: TRUE), remove a final row with totals
 #' @param exclude vector of values to exclude from the tabulation (if \code{x} is a vector)
 #' @param sort if specified, allow to sort the table by increasing ("inc") or decreasing ("dec") frequencies
@@ -17,6 +17,7 @@
 #' @param na.last if TRUE, NA values are always be last table row
 #' @return The result is an object of class data.frame.
 #'
+#' @importFrom glue glue_collapse
 #' @importFrom labelled to_factor
 #' @export
 #'
@@ -35,7 +36,7 @@
 #' fre(d$region, levels = "v")
 #' }
 
-fre <- function(d, x, digits = 1, cum = FALSE, format = FALSE, total = TRUE, exclude = NULL, sort = "",
+fre <- function(d, x, digits = 1, cum = FALSE, format = TRUE, total = TRUE, exclude = NULL, sort = "",
                 valid = !(NA %in% exclude), levels = c("prefixed", "labels", "values"),
                 na.last = TRUE) {
 
@@ -105,12 +106,14 @@ fre <- function(d, x, digits = 1, cum = FALSE, format = FALSE, total = TRUE, exc
 
   labelx <- eval(substitute(attr(d$x,"label")))
   classx <- eval(substitute(class(d$x)))
+  classx <- ifelse(length(classx) > 1,
+                      glue("{glue::glue_collapse(classx,  sep = ', ')}"), classx)
   note1 <- Glue("Label: {labelx}","\n", "Type: {classx}")
   note2 <- Glue("Type: {classx}")
 
   ifelse(format & !is.null(eval(substitute(attr(d$x,"label")))),
-         return(print_table(result, digits = digits, note=note1)),
+         return(print_table(result, digits = c(0, digits, digits, digits, digits), note=note1)),
          ifelse(format & is.null(eval(substitute(attr(d$x,"label")))),
-                return(print_table(result, digits = digits, note=note2)),
+                return(print_table(result, digits = c(0, digits, digits, digits, digits), note=note2)),
                 return(round(result, digits = digits))))
 }
