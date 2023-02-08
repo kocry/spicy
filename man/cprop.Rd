@@ -2,7 +2,7 @@
 % Please edit documentation in R/cprop.R
 \name{cprop}
 \alias{cprop}
-\title{Column percentages of a two-way frequency table}
+\title{Column percentages}
 \usage{
 cprop(
   tab,

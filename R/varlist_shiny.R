@@ -1,5 +1,6 @@
-
-#' List variables in a table widget in shiny, with buttons to copy, save (as CSV/XLS/PDF) and print the table
+#' @title List of variables in a table widget in shiny
+#'
+#' @description List variables in a table widget in shiny, with buttons to copy, save (as CSV/XLS/PDF) and print the table
 #'
 #' @param x a data frame
 #' @param values if values = "min_max" (default), display minimum and maximum values of columns, if values = "all", display all values of columns

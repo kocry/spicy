@@ -2,7 +2,7 @@
 % Please edit documentation in R/mean_n.R
 \name{mean_n}
 \alias{mean_n}
-\title{Computing row means from a \code{data.frame} or \code{matrix} and dealing with NAs}
+\title{Computing row means}
 \usage{
 mean_n(x, n = 1)
 }

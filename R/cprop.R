@@ -1,4 +1,6 @@
-#' Column percentages of a two-way frequency table
+#' @title Column percentages
+#'
+#' @description Column percentages of a two-way frequency table
 #'
 #' @param tab frequency table
 #' @param digits number of digits to display

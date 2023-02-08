@@ -12,7 +12,7 @@ ctab(
   rowprct = FALSE,
   total = TRUE,
   n = TRUE,
-  statistics = TRUE,
+  format = TRUE,
   drop = TRUE,
   ...
 )
@@ -32,7 +32,7 @@ ctab(
 
 \item{n}{if \code{TRUE} (default), display number of observations per row.}
 
-\item{statistics}{if \code{TRUE} (default), add Chi-2 test, p-value and Cramer's V in table note, a title and print a three-line table. If \code{FALSE}, return a tibble object,}
+\item{format}{if \code{TRUE} (default), add a title and print a three-line table. If \code{FALSE}, return a tibble object,}
 
 \item{drop}{if \code{TRUE}, lines or columns with a sum of zero, which would generate \code{NaN} percentages, are dropped.}
 
@@ -42,7 +42,7 @@ ctab(
 The result is an object of class \code{table} and \code{proptab}.or a tibble if statistics argument is FALSE
 }
 \description{
-Two-way frequency table with column (default) or row percentages
+Two-way frequency table with column (default) or row percentages, with Chi-2 test, p-value and Cramer's V
 }
 \examples{
 \dontrun{

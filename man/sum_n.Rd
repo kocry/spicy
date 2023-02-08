@@ -2,7 +2,7 @@
 % Please edit documentation in R/sum_n.R
 \name{sum_n}
 \alias{sum_n}
-\title{Computing row sums from a \code{data.frame} or \code{matrix} and dealing with NAs}
+\title{Computing row sums}
 \usage{
 sum_n(x, n = 1)
 }

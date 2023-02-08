@@ -2,7 +2,7 @@
 % Please edit documentation in R/rprop.R
 \name{rprop}
 \alias{rprop}
-\title{Row percentages of a two-way frequency table}
+\title{Row percentages}
 \usage{
 rprop(
   tab,

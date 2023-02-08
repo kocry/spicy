@@ -2,7 +2,7 @@
 % Please edit documentation in R/varlist_view.R
 \name{varlist_view}
 \alias{varlist_view}
-\title{List variables in the viewer, with buttons to copy, save (CSV/XLS/PDF) and print the table}
+\title{List of variables in the viewer}
 \usage{
 varlist_view(x, values = c("min_max", "all"), to_df = FALSE)
 }

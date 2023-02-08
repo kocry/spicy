@@ -1,4 +1,6 @@
-#' List variables in the viewer, with buttons to copy, save (CSV/XLS/PDF) and print the table
+#' @title List of variables in the viewer
+#'
+#' @description List variables in the viewer, with buttons to copy, save (CSV/XLS/PDF) and print the table
 #'
 #' @param x a data.frame
 #' @param values if values = "min_max" (default), display minimum and maximum values of columns, if values = "all", display all values of columns

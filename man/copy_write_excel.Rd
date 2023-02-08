@@ -2,7 +2,7 @@
 % Please edit documentation in R/copy_write_excel.R
 \name{copy_write_excel}
 \alias{copy_write_excel}
-\title{Copy in the clipboard a data frame from View's RStudio to Excel}
+\title{Copy in the clipboard}
 \usage{
 copy_write_excel(x, row.names = TRUE, col.names = NA, ...)
 }

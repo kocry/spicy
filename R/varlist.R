@@ -1,5 +1,6 @@
-
-#' Data frame of variables (list of variables) contains descriptions of the attributes of each variable (label, values, class, typeof, number of valid rows and NAs)
+#' @title List of variables
+#'
+#' @description Data frame of variables (list of variables) contains descriptions of the attributes of each variable (label, values, class, typeof, number of valid rows and NAs)
 #'
 #' @param x a data.frame
 #' @param values if values = "min_max" (default), display minimum and maximum values of columns, if values = "all", display all values of columns

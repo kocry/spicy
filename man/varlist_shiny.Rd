@@ -2,7 +2,7 @@
 % Please edit documentation in R/varlist_shiny.R
 \name{varlist_shiny}
 \alias{varlist_shiny}
-\title{List variables in a table widget in shiny, with buttons to copy, save (as CSV/XLS/PDF) and print the table}
+\title{List of variables in a table widget in shiny}
 \usage{
 varlist_shiny(x, values = c("min_max", "all"), to_df = FALSE)
 }

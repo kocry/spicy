@@ -1,4 +1,6 @@
-#' Computing row sums from a `data.frame` or `matrix` and dealing with NAs
+#' @title Computing row sums
+#'
+#' @description Computing row sums from a `data.frame` or `matrix` and dealing with NAs
 #'
 #' @param x a data frame or matrix
 #' @param n a numeric value indicates the minimum amount of valid values (not NA) per row to calculate row sum (default = 1). Numeric value between 0 and 1 indicates a proportion of valid values per row to calculate the row sum

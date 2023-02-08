@@ -1,4 +1,6 @@
-#' Copy in the clipboard a data frame from View's RStudio to Excel
+#' @title Copy in the clipboard
+#'
+#' @description Copy in the clipboard a data frame from View's RStudio to Excel
 #'
 #' @param x a data frame, matrix, array (2d) or table
 #' @param row.names either a logical value (default TRUE) indicating whether the row names of x are to be written along with x, or a character vector of row names to be written.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/varlist.R
 \name{varlist}
 \alias{varlist}
-\title{Data frame of variables (list of variables) contains descriptions of the attributes of each variable (label, values, class, typeof, number of valid rows and NAs)}
+\title{List of variables}
 \usage{
 varlist(x, values = c("min_max", "all"), to_df = FALSE)
 }

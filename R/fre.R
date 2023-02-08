@@ -1,6 +1,6 @@
-#' Generate frequency tables.
+#' @title Generate frequency tables.
 #'
-#' Generate and format frequency tables from a variable or a table, with percentages and formatting options.
+#' @description Generate and format frequency tables from a variable or a table, with percentages and formatting options.
 #'
 #' @param d a data.frame
 #' @param x variable to be tabulated
@@ -108,8 +108,8 @@ fre <- function(d, x, digits = 1, cum = FALSE, format = TRUE, total = TRUE, excl
   classx <- eval(substitute(class(d$x)))
   classx <- ifelse(length(classx) > 1,
                       glue("{glue::glue_collapse(classx,  sep = ', ')}"), classx)
-  note1 <- Glue("Label: {labelx}","\n", "Type: {classx}")
-  note2 <- Glue("Type: {classx}")
+  note1 <- Glue("<<silver Label: {labelx}","\n", "Type: {classx}>>")
+  note2 <- Glue("<<silver Type: {classx}>>")
 
   ifelse(format & !is.null(eval(substitute(attr(d$x,"label")))),
          return(print_table(result, digits = c(0, digits, digits, digits, digits), note=note1)),

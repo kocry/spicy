@@ -1,6 +1,6 @@
-#' Generate frequency table of missing values.
+#' @title Generate frequency table of missing values.
 #'
-#' Generate a frequency table of missing values as raw counts and percentages.
+#' @description Generate a frequency table of missing values as raw counts and percentages.
 #'
 #' @param data either a vector or a data frame object
 #' @param ... parameters passed to other methods
