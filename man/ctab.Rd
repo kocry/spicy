@@ -14,6 +14,7 @@ ctab(
   n = TRUE,
   format = TRUE,
   drop = TRUE,
+  file = NULL,
   ...
 )
 }
@@ -35,6 +36,8 @@ ctab(
 \item{format}{if \code{TRUE} (default), add a title and print a three-line table. If \code{FALSE}, return a tibble object,}
 
 \item{drop}{if \code{TRUE}, lines or columns with a sum of zero, which would generate \code{NaN} percentages, are dropped.}
+
+\item{file}{File name of MS Word (\code{.doc}). It doesn't work if \code{format = FALSE}}
 
 \item{...}{parameters passed to other methods.}
 }

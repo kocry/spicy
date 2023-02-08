@@ -11,6 +11,7 @@
 #' @param n if \code{TRUE} (default), display number of observations per row.
 #' @param format if \code{TRUE} (default), add a title and print a three-line table. If \code{FALSE}, return a tibble object,
 #' @param drop if \code{TRUE}, lines or columns with a sum of zero, which would generate \code{NaN} percentages, are dropped.
+#' @param file File name of MS Word (\code{.doc}). It doesn't work if \code{format = FALSE}
 #' @param ... parameters passed to other methods.
 #'
 #' @return The result is an object of class \code{table} and \code{proptab}.or a tibble if statistics argument is FALSE
@@ -26,7 +27,7 @@
 #' tab(mtcars, cyl, vs, total = FALSE, n = FALSE, statistics = FALSE)
 #' }
 
-ctab <- function (d, x, y, digits = 1, rowprct = FALSE, total = TRUE, n = TRUE, format = TRUE, drop = TRUE, ...) {
+ctab <- function (d, x, y, digits = 1, rowprct = FALSE, total = TRUE, n = TRUE, format = TRUE, drop = TRUE, file = NULL, ...) {
   tab <- eval(substitute(table(d$x, d$y)))
   tabchi2 <- tab
   # subset to non-empty rows/columns
@@ -94,24 +95,39 @@ ctab <- function (d, x, y, digits = 1, rowprct = FALSE, total = TRUE, n = TRUE, 
     chi_table <- stats::chisq.test(tabchi2)
 
   if (any(E < 5) && is.finite(PARAMETER))
-    notec <- Glue("<<green {sumE} cells ({round(ecc * 100, digits = 1)}%) have expected counts less than 5. Chi-squared approximation may be incorrect. Pearson\u2019s Chi-squared test with simulated p-value (based on 2000 replicates).>>")
+    (if(is.null(file))
+      notec <- Glue("<<green {sumE} cells ({round(ecc * 100, digits = 1)}%) have expected counts less than 5. Chi-squared approximation may be incorrect. Pearson\u2019s Chi-squared test with simulated p-value (based on 2000 replicates).>>")
+     else
+       notec <- Glue("{sumE} cells ({round(ecc * 100, digits = 1)}%) have expected counts less than 5. Chi-squared approximation may be incorrect. Pearson\u2019s Chi-squared test with simulated p-value (based on 2000 replicates).")
+    )
   else
     notec <- c("")
+
 
   chi2 <- as.numeric(chi_table[1])
   dfx <- as.numeric(chi_table[2])
   p_value <- as.numeric(chi_table[3])
   cramer <- suppressWarnings(cramer_v(eval(substitute(table(d$x, d$y)))))
 
-  note <- Glue("<<silver Chi-2 = {sprintf('%.1f', chi2)} (df = {sprintf('%.0f', dfx)}), p-value = {sprintf('%.3f', p_value)}","\n",
-               "Cramer\u2019s V = {sprintf('%.2f', cramer)}>>","\n",
-               "{notec}")
+  if(is.null(file))
+    note <- Glue("<<silver Chi-2 = {sprintf('%.1f', chi2)} (df = {sprintf('%.0f', dfx)}), p-value = {sprintf('%.3f', p_value)}","\n",
+                 "Cramer\u2019s V = {sprintf('%.2f', cramer)}>>","\n",
+                 "{notec}")
+  else
+    note <- Glue("Chi-2 = {sprintf('%.1f', chi2)} (df = {sprintf('%.0f', dfx)}), p-value = {sprintf('%.3f', p_value)}.
+                 Cramer\u2019s V = {sprintf('%.2f', cramer)}.
+                 {notec}")
 
   #result1 <- as_tibble(as.data.frame.array(result), rownames = "modalities")
 
   g <- eval(substitute(select(d, x,y)))
   g <- attributes(g)$names
-  title <- Glue("<<silver Cross-table: >> <<bold {first(g)}>> {'<<silver x>>'} <<bold {last(g)}>> <<silver (%)>>")
+
+  if(is.null(file))
+    title <- Glue("<<silver Cross-table: >> <<bold {first(g)}>> {'<<silver x>>'} <<bold {last(g)}>> <<silver (%)>>")
+  else
+    title <- Glue("Cross-table: {first(g)} {'x'} {last(g)} (%)")
+
 
   result1 <- as_tibble(as.data.frame.array(result),
                        rownames = "modalities")
@@ -137,7 +153,8 @@ ctab <- function (d, x, y, digits = 1, rowprct = FALSE, total = TRUE, n = TRUE, 
                             digits = digits,
                             title = title,
                             note = note,
-                            nspaces = 1.5)),
+                            nspaces = 1.5,
+                            file = file)),
          return(print(result1, print_attributes = T)))
 
   # return(print_table(result, digits = digits))
