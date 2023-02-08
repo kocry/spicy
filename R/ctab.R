@@ -94,7 +94,7 @@ ctab <- function (d, x, y, digits = 1, rowprct = FALSE, total = TRUE, n = TRUE, 
     chi_table <- stats::chisq.test(tabchi2)
 
   if (any(E < 5) && is.finite(PARAMETER))
-    notec <- Glue("<<green {sumE} cells ({ecc * 100}%) have expected counts less than 5. Chi-squared approximation may be incorrect. Pearson\u2019s Chi-squared test with simulated p-value (based on 2000 replicates).>>")
+    notec <- Glue("<<green {sumE} cells ({round(ecc * 100, digits = 1)}%) have expected counts less than 5. Chi-squared approximation may be incorrect. Pearson\u2019s Chi-squared test with simulated p-value (based on 2000 replicates).>>")
   else
     notec <- c("")
 
