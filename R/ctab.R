@@ -84,18 +84,17 @@ ctab <- function (d, x, y, digits = 1, rowprct = FALSE, total = TRUE, n = TRUE, 
   n <- sum(tabchi2)
   E <- outer(sr, sc)/n
   sumE <- sum(E < 5)
-  lE <- length(E < 5)
+  lE <- length(E)
   PARAMETER <- length(tabchi2) - 1
   ecc <- sumE/lE
-  anyE <- any(E < 5)
 
-  if ((df == 1 & anyE == T) | (df > 1 & ecc < 0.8 ) && is.finite(PARAMETER))
+  if (any(E < 5) && is.finite(PARAMETER))
     chi_table <- stats::chisq.test(tabchi2, simulate.p.value = T)
   else
     chi_table <- stats::chisq.test(tabchi2)
 
-  if ((df == 1 & anyE == T) | (df > 1 & ecc < 0.8 ) && is.finite(PARAMETER))
-    notec <- Glue("<<green {sumE} cells ({ecc * 100}%) have expected counts less than 5. Pearson\u2019s Chi-squared test with simulated p-value (based on 2000 replicates).>>")
+  if (any(E < 5) && is.finite(PARAMETER))
+    notec <- Glue("<<green {sumE} cells ({ecc * 100}%) have expected counts less than 5. Chi-squared approximation may be incorrect. Pearson\u2019s Chi-squared test with simulated p-value (based on 2000 replicates).>>")
   else
     notec <- c("")
 
