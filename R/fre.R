@@ -20,7 +20,6 @@
 #'
 #' @importFrom glue glue glue_collapse
 #' @importFrom labelled to_factor
-#' @importFrom stringr str_replace_all
 #' @export
 #'
 #' @examples
@@ -48,15 +47,13 @@ fre <- function(d = parent.frame(), x, digits = 1, cum = FALSE, format = TRUE, t
   levels <- match.arg(levels)
 
   if (missing(x)){
-    gx <- deparse(substitute({{d}}))
+    gx <- deparse(substitute(d))
     gx <- gsub("^.*\\$","", gx)
-    gx <- stringr::str_replace_all(gx, "[^[:alnum:]]", "")
-    gx <- paste0(gx,collapse = "")}
+    }
   else {
-    gx <- deparse(substitute({{x}}))
+    gx <- deparse(substitute(x))
     gx <- gsub("^.*\\$","", gx)
-    gx <- stringr::str_replace_all(gx, "[^[:alnum:]]", "")
-    gx <- paste0(gx,collapse = "")}
+    }
 
 
   if (missing(x)){

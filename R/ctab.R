@@ -16,7 +16,6 @@
 #'
 #' @return The result is an object of class \code{table} and \code{proptab}.or a tibble if statistics argument is FALSE
 #' @importFrom stats chisq.test
-#' @importFrom stringr str_replace_all
 #' @export
 #'
 #' @examples
@@ -30,28 +29,25 @@
 #' ctab(mtcars, cyl, vs, total = FALSE, n = FALSE, statistics = FALSE)
 #' }
 
+
 ctab <- function (d = parent.frame(), x, y, digits = 1, rowprct = FALSE, total = TRUE, n = TRUE, format = TRUE, drop = TRUE, file = NULL, ...) {
 
   if (missing(y)){
-    gx <- deparse(substitute({{d}}))
+    gx <- deparse(substitute(d))
     gx <- gsub("^.*\\$","", gx)
-    gx <- stringr::str_replace_all(gx, "[^[:alnum:]]", "")
-    gx <- paste0(gx,collapse = "")}
+  }
   else {
-    gx <- deparse(substitute({{x}}))
+    gx <- deparse(substitute(x))
     gx <- gsub("^.*\\$","", gx)
-    gx <- stringr::str_replace_all(gx, "[^[:alnum:]]", "")
-    gx <- paste0(gx,collapse = "")}
+  }
   if (missing(y)){
-    gy <- deparse(substitute({{x}}))
+    gy <- deparse(substitute(x))
     gy <- gsub("^.*\\$","", gy)
-    gy <- stringr::str_replace_all(gy, "[^[:alnum:]]", "")
-    gy <- paste0(gy,collapse = "")}
+  }
   else {
-    gy <- deparse(substitute({{y}}))
+    gy <- deparse(substitute(y))
     gy <- gsub("^.*\\$","", gy)
-    gy <- stringr::str_replace_all(gy, "[^[:alnum:]]", "")
-    gy <- paste0(gy,collapse = "")}
+  }
 
   if (missing(y)){
     d <- d
