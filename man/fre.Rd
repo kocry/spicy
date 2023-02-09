@@ -5,7 +5,7 @@
 \title{Generate frequency tables.}
 \usage{
 fre(
-  d,
+  d = parent.frame(),
   x,
   digits = 1,
   cum = FALSE,
@@ -15,7 +15,8 @@ fre(
   sort = "",
   valid = !(NA \%in\% exclude),
   levels = c("prefixed", "labels", "values"),
-  na.last = TRUE
+  na.last = TRUE,
+  file = NULL
 )
 }
 \arguments{
@@ -42,18 +43,22 @@ must be installed): "labels" for value labels, "values" for values or
 "prefixed" for labels prefixed with values}
 
 \item{na.last}{if TRUE, NA values are always be last table row}
+
+\item{file}{File name of MS Word (\code{.doc}). It doesn't work if \code{format = FALSE}}
 }
 \value{
 The result is an object of class data.frame.
 }
 \description{
-Generate and format frequency tables from a variable or a table, with percentages and formatting options.
+Generate and format frequency tables from a variable or a table, with percentages and formatting options. Support also R base language \code{fre(d$x)} and native pipe \code{d |> fre(x)}.
 }
 \examples{
 \dontrun{
 # factor
 data(mtcars)
 fre(mtcars, vs)
+fre(mtcars, mtcars$vs)
+fre(mtcars$vs)
 mtcars |> fre(vs)
 fre(mtcars, vs, cum = TRUE, total = TRUE)
 fre(mtcars, vs, cum = TRUE, total = TRUE, sort = "inc")

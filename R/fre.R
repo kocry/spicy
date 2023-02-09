@@ -1,6 +1,6 @@
 #' @title Generate frequency tables.
 #'
-#' @description Generate and format frequency tables from a variable or a table, with percentages and formatting options.
+#' @description Generate and format frequency tables from a variable or a table, with percentages and formatting options. Support also R base language \code{fre(d$x)} and native pipe \code{d |> fre(x)}.
 #'
 #' @param d a data.frame
 #' @param x variable to be tabulated
@@ -15,10 +15,12 @@
 #'    must be installed): "labels" for value labels, "values" for values or
 #'    "prefixed" for labels prefixed with values
 #' @param na.last if TRUE, NA values are always be last table row
+#' @param file File name of MS Word (\code{.doc}). It doesn't work if \code{format = FALSE}
 #' @return The result is an object of class data.frame.
 #'
-#' @importFrom glue glue_collapse
+#' @importFrom glue glue glue_collapse
 #' @importFrom labelled to_factor
+#' @importFrom stringr str_replace_all
 #' @export
 #'
 #' @examples
@@ -26,6 +28,8 @@
 #' # factor
 #' data(mtcars)
 #' fre(mtcars, vs)
+#' fre(mtcars, mtcars$vs)
+#' fre(mtcars$vs)
 #' mtcars |> fre(vs)
 #' fre(mtcars, vs, cum = TRUE, total = TRUE)
 #' fre(mtcars, vs, cum = TRUE, total = TRUE, sort = "inc")
@@ -36,25 +40,66 @@
 #' fre(d$region, levels = "v")
 #' }
 
-fre <- function(d, x, digits = 1, cum = FALSE, format = TRUE, total = TRUE, exclude = NULL, sort = "",
+
+fre <- function(d = parent.frame(), x, digits = 1, cum = FALSE, format = TRUE, total = TRUE, exclude = NULL, sort = "",
                 valid = !(NA %in% exclude), levels = c("prefixed", "labels", "values"),
-                na.last = TRUE) {
+                na.last = TRUE, file = NULL) {
 
   levels <- match.arg(levels)
+
+  if (missing(x)){
+    gx <- deparse(substitute({{d}}))
+    gx <- gsub("^.*\\$","", gx)
+    gx <- stringr::str_replace_all(gx, "[^[:alnum:]]", "")
+    gx <- paste0(gx,collapse = "")}
+  else {
+    gx <- deparse(substitute({{x}}))
+    gx <- gsub("^.*\\$","", gx)
+    gx <- stringr::str_replace_all(gx, "[^[:alnum:]]", "")
+    gx <- paste0(gx,collapse = "")}
+
+
+  if (missing(x)){
+    d <- d}
+  else  {
+    d <- eval(substitute(as.data.frame(d)),d)
+  }
+
+
+
+  if (missing(x)){
+    tab <- eval(substitute(table(labelled::to_factor({{d}}, levels), exclude = exclude)))
+  }
+
+  else {
+    tab <- eval(substitute(table(labelled::to_factor(x, levels), exclude = exclude)), d)
+  }
+
+  #tab <- eval(substitute(table(labelled::to_factor(d$x, levels), exclude = exclude)), d)
+
+
+
 
   # if (is.table(d) & is.null(x)) {
   #  tab <- d
   #} else {
   #  tab <- eval(substitute(table(labelled::to_factor(d$x, levels), exclude = exclude)))
   #}
-  tab <- eval(substitute(table(labelled::to_factor(d$x, levels), exclude = exclude)))
+  # tab <- eval(substitute(table(labelled::to_factor(d$x, levels), exclude = exclude)))
 
   effectifs <- as.vector(tab)
   pourc <- as.vector(effectifs / sum(effectifs) * 100)
   result <- data.frame(n = effectifs, pourc = pourc)
 
   if (valid) {
-    user_na <- eval(substitute(unique(as.character(labelled::to_factor(d$x, levels)[is.na(d$x)]))))
+    if (missing(x)){
+      user_na <- eval(substitute(unique(as.character(labelled::to_factor({{d}}, levels)[is.na({{d}})]))))
+    }
+
+    else {
+      user_na <- eval(substitute(unique(as.character(labelled::to_factor(x, levels)[is.na(x)]))), d)
+    }
+
     NA.position <- which(is.na(names(tab)) | names(tab) %in% user_na)
     n.na <- sum(tab[NA.position])
     valid.pourc <- as.vector(effectifs / (sum(effectifs) - n.na) * 100)
@@ -104,16 +149,44 @@ fre <- function(d, x, digits = 1, cum = FALSE, format = TRUE, total = TRUE, excl
 
   class(result) <- c("freqtab", class(result))
 
-  labelx <- eval(substitute(attr(d$x,"label")))
-  classx <- eval(substitute(class(d$x)))
-  classx <- ifelse(length(classx) > 1,
-                      glue("{glue::glue_collapse(classx,  sep = ', ')}"), classx)
-  note1 <- Glue("<<silver Label: {labelx}","\n", "Type: {classx}>>")
-  note2 <- Glue("<<silver Type: {classx}>>")
 
-  ifelse(format & !is.null(eval(substitute(attr(d$x,"label")))),
-         return(print_table(result, digits = c(0, digits, digits, digits, digits), note=note1)),
-         ifelse(format & is.null(eval(substitute(attr(d$x,"label")))),
-                return(print_table(result, digits = c(0, digits, digits, digits, digits), note=note2)),
+  if (missing(x)){
+    labelx <- eval(substitute(attr({{d}}, "label")))
+  }
+  else {
+    labelx <- eval(substitute(attr(x, "label")), d)
+  }
+
+  if (missing(x)){
+    classx <- eval(substitute(class({{d}})))
+  }
+  else {
+    classx <- eval(substitute(class(x)), d)
+  }
+
+  classx <- ifelse(length(classx) > 1,
+                   glue::glue("{glue::glue_collapse(classx,  sep = ', ')}"), classx)
+
+  if(is.null(file)){
+    note1 <- Glue("<<silver Label: {labelx}","\n", "Type: {classx}>>")
+    note2 <- Glue("<<silver Type: {classx}>>")}
+  else{
+    note1 <- Glue("Label: {labelx}.
+                  Type: {classx}")
+    note2 <- Glue("Type: {classx}")}
+
+
+
+
+  if(is.null(file))
+    title <- Glue("<<silver Frequency Table: >> <<bold {gx}>>")
+  else
+    title <- Glue("Frequency Table: {gx}")
+
+
+  ifelse(format & !is.null(labelx),
+         return(print_table(result, digits = c(0, digits, digits, digits, digits), title = title, note=note1, file = file)),
+         ifelse(format & is.null(labelx),
+                return(print_table(result, digits = c(0, digits, digits, digits, digits), title = title, note=note2, file = file)),
                 return(round(result, digits = digits))))
 }

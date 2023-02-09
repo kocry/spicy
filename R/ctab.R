@@ -1,6 +1,6 @@
 #' @title Cross table
 #'
-#' @description Two-way frequency table with column (default) or row percentages, with Chi-2 test, p-value and Cramer's V
+#' @description Two-way frequency table with column (default) or row percentages, with Chi-2 test, p-value and Cramer's V. Support also R base language \code{table(d$x, d$y)} and native pipe \code{d |> table(x, y)}.
 #'
 #' @param d data.frame
 #' @param x row variable
@@ -16,19 +16,28 @@
 #'
 #' @return The result is an object of class \code{table} and \code{proptab}.or a tibble if statistics argument is FALSE
 #' @importFrom stats chisq.test
+#' @importFrom stringr str_replace_all
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' data(mtcars)
-#' tab(mtcars, cyl, vs)
-#' mtcars |> tab(cyl, vs)
-#' tab(mtcars, cyl, vs, rowprct = TRUE, total = FALSE, n = FALSE, statistics = FALSE)
-#' tab(mtcars, cyl, vs, total = FALSE, n = FALSE, statistics = FALSE)
+#' ctab(mtcars, cyl, vs)
+#' ctab(mtcars, mtcars$cyl, mtcars$vs)
+#' tab(mtcars$cyl, mtcars$vs)
+#' mtcars |> ctab(cyl, vs)
+#' ctab(mtcars, cyl, vs, rowprct = TRUE, total = FALSE, n = FALSE, statistics = FALSE)
+#' ctab(mtcars, cyl, vs, total = FALSE, n = FALSE, statistics = FALSE)
 #' }
 
-ctab <- function (d, x, y, digits = 1, rowprct = FALSE, total = TRUE, n = TRUE, format = TRUE, drop = TRUE, file = NULL, ...) {
-  tab <- eval(substitute(table(d$x, d$y)))
+ctab <- function (d = parent.frame(), x, y, digits = 1, rowprct = FALSE, total = TRUE, n = TRUE, format = TRUE, drop = TRUE, file = NULL, ...) {
+
+    if (missing(y))
+      tab <- eval(substitute(table(d, x)))
+    else
+      tab <- eval(substitute(table(x, y)), d)
+
+  # tab <- eval(substitute(table(d$x, d$y)))
   tabchi2 <- tab
   # subset to non-empty rows/columns
   if(drop) tab <- tab[rowSums(tab) > 0, colSums(tab) > 0, drop=FALSE]
@@ -53,7 +62,9 @@ ctab <- function (d, x, y, digits = 1, rowprct = FALSE, total = TRUE, n = TRUE, 
   # row percent
   if (rowprct) {
 
-    tab <- eval(substitute(table(d$x, d$y)))
+    tab <- tabchi2
+
+    # tab <- eval(substitute(table(d$x, d$y)))
     # subset to non-empty rows/columns
     if(drop) tab <- tab[rowSums(tab) > 0, colSums(tab) > 0, drop=FALSE]
     dn <- names(dimnames(tab))
@@ -107,7 +118,7 @@ ctab <- function (d, x, y, digits = 1, rowprct = FALSE, total = TRUE, n = TRUE, 
   chi2 <- as.numeric(chi_table[1])
   dfx <- as.numeric(chi_table[2])
   p_value <- as.numeric(chi_table[3])
-  cramer <- suppressWarnings(cramer_v(eval(substitute(table(d$x, d$y)))))
+  cramer <- suppressWarnings(cramer_v(eval(substitute(tabchi2))))
 
   if(is.null(file))
     note <- Glue("<<silver Chi-2 = {sprintf('%.1f', chi2)} (df = {sprintf('%.0f', dfx)}), p-value = {sprintf('%.3f', p_value)}","\n",
@@ -120,13 +131,31 @@ ctab <- function (d, x, y, digits = 1, rowprct = FALSE, total = TRUE, n = TRUE, 
 
   #result1 <- as_tibble(as.data.frame.array(result), rownames = "modalities")
 
-  g <- eval(substitute(select(d, x,y)))
-  g <- attributes(g)$names
+  if (missing(y)){
+    gx <- deparse(substitute({{d}}))
+    gx <- gsub("^.*\\$","", gx)
+    gx <- stringr::str_replace_all(gx, "[^[:alnum:]]", "")
+    gx <- paste0(gx,collapse = "")}
+  else {
+    gx <- deparse(substitute({{x}}))
+    gx <- gsub("^.*\\$","", gx)
+    gx <- stringr::str_replace_all(gx, "[^[:alnum:]]", "")
+    gx <- paste0(gx,collapse = "")}
+  if (missing(y)){
+    gy <- deparse(substitute({{x}}))
+    gy <- gsub("^.*\\$","", gy)
+    gy <- stringr::str_replace_all(gy, "[^[:alnum:]]", "")
+    gy <- paste0(gy,collapse = "")}
+  else {
+    gy <- deparse(substitute({{y}}))
+    gy <- gsub("^.*\\$","", gy)
+    gy <- stringr::str_replace_all(gy, "[^[:alnum:]]", "")
+    gy <- paste0(gy,collapse = "")}
 
   if(is.null(file))
-    title <- Glue("<<silver Cross-table: >> <<bold {first(g)}>> {'<<silver x>>'} <<bold {last(g)}>> <<silver (%)>>")
+    title <- Glue("<<silver Cross-table: >> <<bold {gx}>> {'<<silver x>>'} <<bold {gy}>> <<silver (%)>>")
   else
-    title <- Glue("Cross-table: {first(g)} {'x'} {last(g)} (%)")
+    title <- Glue("Cross-table: {gx} {'x'} {gy} (%)")
 
 
   result1 <- as_tibble(as.data.frame.array(result),

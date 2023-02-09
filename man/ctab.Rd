@@ -5,7 +5,7 @@
 \title{Cross table}
 \usage{
 ctab(
-  d,
+  d = parent.frame(),
   x,
   y,
   digits = 1,
@@ -45,14 +45,16 @@ ctab(
 The result is an object of class \code{table} and \code{proptab}.or a tibble if statistics argument is FALSE
 }
 \description{
-Two-way frequency table with column (default) or row percentages, with Chi-2 test, p-value and Cramer's V
+Two-way frequency table with column (default) or row percentages, with Chi-2 test, p-value and Cramer's V. Support also R base language \code{table(d$x, d$y)} and native pipe \code{d |> table(x, y)}.
 }
 \examples{
 \dontrun{
 data(mtcars)
-tab(mtcars, cyl, vs)
-mtcars |> tab(cyl, vs)
-tab(mtcars, cyl, vs, rowprct = TRUE, total = FALSE, n = FALSE, statistics = FALSE)
-tab(mtcars, cyl, vs, total = FALSE, n = FALSE, statistics = FALSE)
+ctab(mtcars, cyl, vs)
+ctab(mtcars, mtcars$cyl, mtcars$vs)
+tab(mtcars$cyl, mtcars$vs)
+mtcars |> ctab(cyl, vs)
+ctab(mtcars, cyl, vs, rowprct = TRUE, total = FALSE, n = FALSE, statistics = FALSE)
+ctab(mtcars, cyl, vs, total = FALSE, n = FALSE, statistics = FALSE)
 }
 }
