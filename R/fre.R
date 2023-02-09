@@ -153,9 +153,16 @@ fre <- function(d = parent.frame(), x, digits = 1, cum = FALSE, format = TRUE, t
   else {
     labelx <- eval(substitute(attr(x, "label")), d)
   }
-  labelx <- gsub("'", "\u2019", labelx)
-  labelx <- gsub("\"", "\u2019", labelx)
-  labelx <- gsub("''", "\u2019", labelx)
+
+  if(!is.null(labelx)){
+    labelx <- gsub("'", "\u2019", labelx)
+    labelx <- gsub("\"", "\u2019", labelx)
+    labelx <- gsub("''", "\u2019", labelx)
+  }
+  else{
+    labelx
+  }
+
 
   if (missing(x)){
     classx <- class(d)
@@ -169,13 +176,13 @@ fre <- function(d = parent.frame(), x, digits = 1, cum = FALSE, format = TRUE, t
 
   if(is.null(file)){
     note1 <- Glue("<<silver Label: {labelx}","\n", "Type: {classx}>>")
-    note2 <- Glue("<<silver Type: {classx}>>")}
+    note2 <- Glue("<<silver Type: {classx}>>")
+  }
   else{
     note1 <- Glue("Label: {labelx}.
                   Type: {classx}")
-    note2 <- Glue("Type: {classx}")}
-
-
+    note2 <- Glue("Type: {classx}")
+  }
 
 
   if(is.null(file))
