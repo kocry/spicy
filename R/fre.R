@@ -148,14 +148,14 @@ fre <- function(d = parent.frame(), x, digits = 1, cum = FALSE, format = TRUE, t
 
 
   if (missing(x)){
-    labelx <- eval(substitute(attr({{d}}, "label")))
+    labelx <- attr(d, "label")
   }
   else {
     labelx <- eval(substitute(attr(x, "label")), d)
   }
 
   if (missing(x)){
-    classx <- eval(substitute(class({{d}})))
+    classx <- class(d)
   }
   else {
     classx <- eval(substitute(class(x)), d)
