@@ -32,10 +32,38 @@
 
 ctab <- function (d = parent.frame(), x, y, digits = 1, rowprct = FALSE, total = TRUE, n = TRUE, format = TRUE, drop = TRUE, file = NULL, ...) {
 
-    if (missing(y))
-      tab <- eval(substitute(table(d, x)))
-    else
-      tab <- eval(substitute(table(x, y)), d)
+  if (missing(y)){
+    gx <- deparse(substitute({{d}}))
+    gx <- gsub("^.*\\$","", gx)
+    gx <- stringr::str_replace_all(gx, "[^[:alnum:]]", "")
+    gx <- paste0(gx,collapse = "")}
+  else {
+    gx <- deparse(substitute({{x}}))
+    gx <- gsub("^.*\\$","", gx)
+    gx <- stringr::str_replace_all(gx, "[^[:alnum:]]", "")
+    gx <- paste0(gx,collapse = "")}
+  if (missing(y)){
+    gy <- deparse(substitute({{x}}))
+    gy <- gsub("^.*\\$","", gy)
+    gy <- stringr::str_replace_all(gy, "[^[:alnum:]]", "")
+    gy <- paste0(gy,collapse = "")}
+  else {
+    gy <- deparse(substitute({{y}}))
+    gy <- gsub("^.*\\$","", gy)
+    gy <- stringr::str_replace_all(gy, "[^[:alnum:]]", "")
+    gy <- paste0(gy,collapse = "")}
+
+  if (missing(y)){
+    d <- d
+    x <- x}
+  else  {
+    d <- eval(substitute(as.data.frame(d)), d)
+  }
+
+  if (missing(y))
+    tab <- eval(substitute(table(d, x)))
+  else
+    tab <- eval(substitute(table(x, y)), d)
 
   # tab <- eval(substitute(table(d$x, d$y)))
   tabchi2 <- tab
@@ -131,26 +159,7 @@ ctab <- function (d = parent.frame(), x, y, digits = 1, rowprct = FALSE, total =
 
   #result1 <- as_tibble(as.data.frame.array(result), rownames = "modalities")
 
-  if (missing(y)){
-    gx <- deparse(substitute({{d}}))
-    gx <- gsub("^.*\\$","", gx)
-    gx <- stringr::str_replace_all(gx, "[^[:alnum:]]", "")
-    gx <- paste0(gx,collapse = "")}
-  else {
-    gx <- deparse(substitute({{x}}))
-    gx <- gsub("^.*\\$","", gx)
-    gx <- stringr::str_replace_all(gx, "[^[:alnum:]]", "")
-    gx <- paste0(gx,collapse = "")}
-  if (missing(y)){
-    gy <- deparse(substitute({{x}}))
-    gy <- gsub("^.*\\$","", gy)
-    gy <- stringr::str_replace_all(gy, "[^[:alnum:]]", "")
-    gy <- paste0(gy,collapse = "")}
-  else {
-    gy <- deparse(substitute({{y}}))
-    gy <- gsub("^.*\\$","", gy)
-    gy <- stringr::str_replace_all(gy, "[^[:alnum:]]", "")
-    gy <- paste0(gy,collapse = "")}
+
 
   if(is.null(file))
     title <- Glue("<<silver Cross-table: >> <<bold {gx}>> {'<<silver x>>'} <<bold {gy}>> <<silver (%)>>")

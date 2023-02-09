@@ -62,7 +62,7 @@ fre <- function(d = parent.frame(), x, digits = 1, cum = FALSE, format = TRUE, t
   if (missing(x)){
     d <- d}
   else  {
-    d <- eval(substitute(as.data.frame(d)),d)
+    d <- eval(substitute(as.data.frame(d)), d)
   }
 
 
