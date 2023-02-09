@@ -49,11 +49,11 @@ fre <- function(d = parent.frame(), x, digits = 1, cum = FALSE, format = TRUE, t
   if (missing(x)){
     gx <- deparse(substitute(d))
     gx <- gsub("^.*\\$","", gx)
-    }
+  }
   else {
     gx <- deparse(substitute(x))
     gx <- gsub("^.*\\$","", gx)
-    }
+  }
 
 
   if (missing(x)){
@@ -153,6 +153,9 @@ fre <- function(d = parent.frame(), x, digits = 1, cum = FALSE, format = TRUE, t
   else {
     labelx <- eval(substitute(attr(x, "label")), d)
   }
+  labelx <- gsub("'", "\u2019", labelx)
+  labelx <- gsub("\"", "\u2019", labelx)
+  labelx <- gsub("''", "\u2019", labelx)
 
   if (missing(x)){
     classx <- class(d)
