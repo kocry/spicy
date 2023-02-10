@@ -15,6 +15,7 @@
 #' @param ... parameters passed to other methods.
 #'
 #' @return The result is an object of class \code{table} and \code{proptab}.or a tibble if statistics argument is FALSE
+#' @importFrom collapse qTBL
 #' @importFrom stats chisq.test
 #' @export
 #'
@@ -29,8 +30,10 @@
 #' ctab(mtcars, cyl, vs, total = FALSE, n = FALSE, statistics = FALSE)
 #' }
 
-
 ctab <- function (d = parent.frame(), x, y, digits = 1, rowprct = FALSE, total = TRUE, n = TRUE, format = TRUE, drop = TRUE, file = NULL, ...) {
+
+  # if (missing(y)) eval(substitute(collapse::qtab(d, x)))
+  # else eval(substitute(collapse::qtab(x, y)), d)
 
   if (missing(y)){
     gx <- deparse(substitute(d))
@@ -163,11 +166,11 @@ ctab <- function (d = parent.frame(), x, y, digits = 1, rowprct = FALSE, total =
     title <- Glue("Cross-table: {gx} {'x'} {gy} (%)")
 
 
-  result1 <- as_tibble(as.data.frame.array(result),
-                       rownames = "modalities")
+  result1 <- collapse::qTBL(as.data.frame.array(result),
+                            row.names.col = "modalities")
 
-  result1 <- as_tibble(as.data.frame.array(result),
-                       rownames = "modalities")
+  result1 <- collapse::qTBL(as.data.frame.array(result),
+                       row.names.col = "modalities")
 
   attr(result1,"metadata") <- Glue("{note}")
 

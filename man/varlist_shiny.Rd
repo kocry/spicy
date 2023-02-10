@@ -4,14 +4,12 @@
 \alias{varlist_shiny}
 \title{List of variables in a table widget in shiny}
 \usage{
-varlist_shiny(x, values = c("min_max", "all"), to_df = FALSE)
+varlist_shiny(x, values = FALSE)
 }
 \arguments{
 \item{x}{a data frame}
 
-\item{values}{if values = "min_max" (default), display minimum and maximum values of columns, if values = "all", display all values of columns}
-
-\item{to_df}{if TRUE, return a tibble data format; if FALSE (default), returns a data frame}
+\item{values}{if values = FALSE (default), display minimum and maximum values of columns. If values = TRUE, display all values of columns.}
 }
 \value{
 a data frame

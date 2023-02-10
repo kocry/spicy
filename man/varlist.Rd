@@ -4,14 +4,14 @@
 \alias{varlist}
 \title{List of variables}
 \usage{
-varlist(x, values = c("min_max", "all"), to_df = FALSE)
+varlist(x, values = FALSE, tbl = FALSE)
 }
 \arguments{
 \item{x}{a data.frame}
 
-\item{values}{if values = "min_max" (default), display minimum and maximum values of columns, if values = "all", display all values of columns}
+\item{values}{if values = FALSE (default), display minimum and maximum values of columns. If values = TRUE, display all values of columns.}
 
-\item{to_df}{if FALSE (default), returns a data frame of variables in source editor of RStudio; if TRUE, print a tibble data format in the console}
+\item{tbl}{if FALSE (default), return a data frame of variables in source editor of RStudio; if TRUE, print a tibble data format in the console}
 }
 \value{
 a data.frame
@@ -22,6 +22,6 @@ Data frame of variables (list of variables) contains descriptions of the attribu
 \examples{
 \dontrun{
 varlist(x)
-varlist(x, values = "all", to_df = TRUE)
+varlist(x, values = TRUE, tbl = FALSE)
 }
 }
