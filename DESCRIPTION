@@ -13,14 +13,21 @@ URL: https://github.com/kocry/spicy
 BugReports: https://github.com/kocry/spicy/issues
 Imports: 
     collapse,
+    data.table,
     dplyr,
     DT,
     glue,
+    jtools,
     labelled,
+    lme4,
+    lmerTest,
     lubridate,
+    MuMIn,
+    performance,
     shiny,
     stats,
     stringr,
+    texreg,
     tibble
 Suggests: 
     knitr,
