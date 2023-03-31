@@ -38,6 +38,7 @@ No return value.
 NOTE: \code{\link{model_summary}} is preferred.
 }
 \examples{
+\dontrun{
 ## Example 1: OLS regression
 lm = lm(Temp ~ Month + Day + Wind + Solar.R, data=airquality)
 GLM_summary(lm)
@@ -50,6 +51,6 @@ glm = glm(case ~ age + parity + education + spontaneous + induced,
           data=infert, family=binomial)
 GLM_summary(glm)
 GLM_summary(glm, robust="HC1", cluster="stratum")
-
+}
 
 }

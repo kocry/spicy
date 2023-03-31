@@ -165,9 +165,9 @@ df_to_html = function(df, title="", note="", append="",
     if(file=="NOPRINT") {
       file = NULL
     } else {
-      file = str_replace(file, "\\.docx$", ".doc")
-      if(str_detect(file, "\\.doc$")==FALSE)
-        file = paste0(file, ".doc")
+      file = str_replace(file, "\\.doc$", ".docx")
+      if(str_detect(file, "\\.docx$")==F)
+        file = paste0(file, ".docx")
     }
   }
 
@@ -252,7 +252,7 @@ table th, table td {padding-left: 5px; padding-right: 5px; height: 19px;}
       f = file(file, "w", encoding="UTF-8")
       cat(HTML, file=f)
       close(f)
-      Print("<<green \u221a>> Table saved to <<bold \"{paste0(getwd(), '/', file)}\">>")
+      Print("<<green \u221a>> Table saved to << \"{paste0(getwd(), '/', file)}\">>")
       cat("\n")
     }
   }

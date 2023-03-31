@@ -186,7 +186,7 @@ fre <- function(d = parent.frame(), x, digits = 1, cum = FALSE, format = TRUE, t
 
 
   if(is.null(file))
-    title <- Glue("<<silver Frequency Table: >> <<bold {gx}>>")
+    title <- Glue("<<silver Frequency Table: >> {gx}")
   else
     title <- Glue("Frequency Table: {gx}")
 

@@ -1,7 +1,8 @@
-.onAttach <- function(libname, pkgname) {
-  Print("<<yellow Welcome to spicy!>>")
-}
+# .onAttach <- function(libname, pkgname) {
+#  Print("<<yellow Welcome to spicy!>>")
+#}
 
+packageStartupMessage(Glue("<<yellow Welcome to spicy!>>"))
 
 # Determine system type
 sys_type <- function() {

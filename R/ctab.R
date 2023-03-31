@@ -109,6 +109,7 @@ ctab <- function (d = parent.frame(), x, y, digits = 1, rowprct = FALSE, total =
     }
     if (n) tab <- cbind(tab, N = effectifs)
     result <- as.data.frame.array(tab)
+    result$N <- as.integer(result$N)
   }
 
   class(result) <- c("proptab", class(result))
@@ -161,7 +162,7 @@ ctab <- function (d = parent.frame(), x, y, digits = 1, rowprct = FALSE, total =
 
 
   if(is.null(file))
-    title <- Glue("<<silver Cross-table: >> <<bold {gx}>> {'<<silver x>>'} <<bold {gy}>> <<silver (%)>>")
+    title <- Glue("<<silver Cross-table: >>  {gx} {'<<silver x>>'} {gy} <<silver (%)>>")
   else
     title <- Glue("Cross-table: {gx} {'x'} {gy} (%)")
 

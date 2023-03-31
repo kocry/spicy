@@ -543,6 +543,7 @@ model_summary = function(model.list,
 #' @return No return value.
 #'
 #' @examples
+#' \dontrun{
 #' ## Example 1: OLS regression
 #' lm = lm(Temp ~ Month + Day + Wind + Solar.R, data=airquality)
 #' GLM_summary(lm)
@@ -555,13 +556,14 @@ model_summary = function(model.list,
 #'           data=infert, family=binomial)
 #' GLM_summary(glm)
 #' GLM_summary(glm, robust="HC1", cluster="stratum")
-#'
+#' }
 #'
 #' @export
 #' @importFrom jtools summ
 #' @importFrom MuMIn std.coef
 #' @importFrom performance r2_nagelkerke
 #' @importFrom stats qt qnorm na.omit
+#'
 GLM_summary = function(model, robust=FALSE, cluster=NULL,
                        digits=3, nsmall=digits, ...) {
   dots = list(...)
