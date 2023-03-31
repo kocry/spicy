@@ -165,9 +165,9 @@ df_to_html = function(df, title="", note="", append="",
     if(file=="NOPRINT") {
       file = NULL
     } else {
-      file = str_replace(file, "\\.doc$", ".docx")
-      if(str_detect(file, "\\.docx$")==F)
-        file = paste0(file, ".docx")
+      file = str_replace(file, "\\.docx$", ".doc")
+      if(str_detect(file, "\\.doc$")==F)
+        file = paste0(file, ".doc")
     }
   }
 
