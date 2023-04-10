@@ -19,7 +19,7 @@
 #'
 fcts_na_val <- function(x) {
   if (!is.data.frame(x))
-    stop("fcts_na_val only works with a data.frame")
+    stop("fcts_na_val only works with data frames")
   if (!all(sapply(x, is.factor)))
     stop("There is at least one variable that is not a factor")
   if (!any(sapply(x, is.na)))

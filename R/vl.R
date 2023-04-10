@@ -21,8 +21,8 @@
 
 vl <- function(x, values = FALSE, tbl = FALSE) {
 
-  if (!is.list(x))
-    stop("vl only works with lists")
+  if (!is.data.frame(x))
+    stop("vl only works with data frames")
   res <- list(Variable = attr(x, "names"))
   # attributes(x) <- NULL
   res$Label <- collapse::vlabels(x, attrn = "label", use.names = FALSE)
