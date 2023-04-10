@@ -2,7 +2,7 @@
 % Please edit documentation in R/fcts_na_val.R
 \name{fcts_na_val}
 \alias{fcts_na_val}
-\title{Convert NA values to NA levels of a data.frame}
+\title{Convert NA values (NA) to NA levels ("NA") of a data.frame}
 \usage{
 fcts_na_val(x)
 }
@@ -13,7 +13,7 @@ fcts_na_val(x)
 a data.frame
 }
 \description{
-Convert NA values to NA levels for all factors of a data.frame. All the variables must be factors.
+Convert NA values (NA) to NA levels ("NA") for all factors of a data.frame. All the variables must be factors.
 }
 \examples{
 \dontrun{

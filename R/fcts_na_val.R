@@ -1,8 +1,8 @@
 
 
-#' @title Convert NA values to NA levels of a data.frame
+#' @title Convert NA values (NA) to NA levels ("NA") of a data.frame
 #'
-#' @description Convert NA values to NA levels for all factors of a data.frame. All the variables must be factors.
+#' @description Convert NA values (NA) to NA levels ("NA") for all factors of a data.frame. All the variables must be factors.
 #' @param x a data.frame
 #'
 #' @return a data.frame
