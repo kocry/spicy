@@ -25,5 +25,6 @@ fcts_val_na <- function(x) {
   if (!all(sapply(x, is.factor)))
     stop("There is at least one variable that is not a factor")
   x[x == "NA"] <- NA
+  x <- droplevels(x, "NA")
   x
 }
